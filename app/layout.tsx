@@ -50,7 +50,7 @@ export default function RootLayout({
                   <ModeToggle/>
                 </div>
               </header>
-              <div className="p-4">
+              <div className="flex p-4 w-full h-full items-center justify-center">
               {children}
               </div>
             </SidebarInset>

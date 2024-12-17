@@ -31,12 +31,14 @@ export function NetworkStatus() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
+                <div className="flex aspect-square items-center justify-center size-8">
+                    <div className="flex aspect-square size-3 rounded-2xl bg-green-500"/>
+                </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   Flow Mainnet
                 </span>
                 <div className="flex items-center gap-1">
-                <div className="flex aspect-square size-2 rounded-2xl bg-green-500"/>
                 <span className="truncate text-xs text-green-500">{`Available`}</span>
                 </div>
               </div>

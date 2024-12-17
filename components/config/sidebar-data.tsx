@@ -73,17 +73,17 @@ export const sidebarData = {
         items: [
           {
             title: "Base64",
-            url: "#",
+            url: "/code/base64",
             icon: CaseLower
           },
           {
             title: "RLP",
-            url: "#",
+            url: "/code/rlp",
             icon: TextIcon
           },
           {
             title: "iOS Config Encode",
-            url: "#",
+            url: "/code/ios-config-encode",
             icon: AppleIcon
           },
         ],

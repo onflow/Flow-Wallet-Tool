@@ -12,9 +12,9 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar"
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar"
 import { NetworkStatus } from "./network-status"
 import { sidebarData } from "./config/sidebar-data"
+import Image from "next/image"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -22,15 +22,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              asChild
+            >
               <a href="#">
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src="/logo.png" />
-                {/* <AvatarFallback>FRW</AvatarFallback> */}
-                </Avatar>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Flow Wallet</span>
-                  <span className="text-neutral-500 text-xs">Tool Kits</span>
+
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-green-400">
+                <Image src="/logo.png" width={32} height={32} alt="Flow Wallet" />
+              </div>
+
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Flow Wallet</span>
+                  <span className="truncate text-neutral-500 text-xs">
+                    Tool Kits
+                  </span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -42,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NetworkStatus/>
+        <NetworkStatus />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

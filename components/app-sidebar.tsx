@@ -27,8 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               asChild
             >
-              <a href="#">
-
+              <a href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-green-400">
                 <Image src="/logo.png" width={32} height={32} alt="Flow Wallet" />
               </div>

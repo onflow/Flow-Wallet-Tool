@@ -10,6 +10,7 @@ import {
   CardTitle
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-separator";
 import { TextIcon } from "lucide-react";
@@ -86,15 +87,21 @@ export default function Page() {
   return (
     <Card className="w-4/5 h-4/5 overflow-hidden">
       <CardHeader className="bg-sidebar">
+        <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TextIcon />
           <CardTitle>RLP</CardTitle>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="airplane-mode">Transaction</Label>
+          <Switch id="airplane-mode" />
+        </div>
         </div>
         <CardDescription>Encode and Decode RLP (Recursive Length Prefix)</CardDescription>
       </CardHeader>
       <Separator className="bg-border h-px" />
       <CardContent className="flex flex-col pt-4 pb-4 gap-8 h-[calc(100%-120px)]">
-        <div className="grid grid-cols-2 gap-8 h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
           <div className="flex flex-col space-y-1.5 h-full">
             <Label htmlFor="decoded-text">RLP Encoded (Hex)</Label>
             <Textarea

@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 import { cp } from "node:fs/promises";
-import CopyPlugin from "copy-webpack-plugin";
-import path from "path";
 
 const nextConfig = {
 	async rewrites() {

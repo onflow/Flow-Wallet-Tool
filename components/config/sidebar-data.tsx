@@ -25,7 +25,7 @@ export const sidebarData = {
         items: [
             {
             title: "Create",
-            url: "#",
+            url: "/account/create",
             icon: UserRoundPlus,
             },
           {

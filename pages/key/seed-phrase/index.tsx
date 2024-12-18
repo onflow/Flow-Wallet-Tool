@@ -13,13 +13,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-separator";
-import { ListOrdered } from "lucide-react";
+import { Eye, EyeOff, ListOrdered } from "lucide-react";
 import { KeyInfoCard } from "@/components/key-info-card";
 import { seed2PubKey } from "@/lib/key-tool";
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 
 export default function Page() {
+  const [showPassword, setShowPassword] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState("");
   const [passphrase, setPassphrase] = useState("");
   const [derivationPath, setDerivationPath] = useState("m/44'/539'/0'/0/0");
@@ -45,7 +46,7 @@ export default function Page() {
   };
 
   return (
-    <Card className="min-w-[450px] max-w-[650px overflow-hidden">
+    <Card className="min-w-[450px] max-w-[650px] overflow-hidden">
       <CardHeader className="bg-sidebar">
         <div className="flex items-center gap-2">
           <ListOrdered />
@@ -81,12 +82,26 @@ export default function Page() {
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="passphrase">Passphrase</Label>
-              <Input 
-                id="passphrase" 
-                placeholder="Optional"
+              <div className="relative">
+                <Input 
+                  id="passphrase"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Optional"
                 value={passphrase}
                 onChange={(e) => setPassphrase(e.target.value)}
               />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         {/* </form> */}

@@ -20,6 +20,16 @@ const jsonToKey = async (json: string, password: string) => {
 	return privateKey;
 };
 
+const jsonToMnemonic = async (json: string, password: string) => {
+	const { StoredKey, PrivateKey } = await initWasm();
+	const keystore = StoredKey.importJSON(Buffer.from(json, "utf-8"));
+	const mnemonic = await keystore.decryptMnemonic(
+		Buffer.from(password, "utf-8")
+	);
+	return mnemonic;
+};
+
+
 const pk2PubKey = async (pk: string) => {
 	const { PrivateKey } = await initWasm();
 	const privateKey = PrivateKey.createWithData(Buffer.from(pk, "hex"));
@@ -71,4 +81,4 @@ const seed2PubKey = async (seed: string, path: string = FLOW_BIP44_PATH, passphr
 	};
 };
 
-export { generateSeedPhrase, jsonToKey, pk2PubKey, seed2PubKey };
+export { generateSeedPhrase, jsonToKey, jsonToMnemonic, pk2PubKey, seed2PubKey };

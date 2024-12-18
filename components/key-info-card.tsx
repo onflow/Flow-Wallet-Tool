@@ -12,7 +12,7 @@ interface KeyInfoCardProps {
 
 export function KeyInfoCard({ title, privateKey, publicKey }: KeyInfoCardProps) {
   return (
-    <Card>
+    <Card className="flex-1">
       <CardHeader className="bg-sidebar py-2">
         <p className="text-sm font-medium text-muted-foreground uppercase">{title}</p>
       </CardHeader>

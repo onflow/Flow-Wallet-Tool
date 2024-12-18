@@ -3,6 +3,7 @@
 import * as wasmModule from "@trustwallet/wallet-core/dist/lib/wallet-core.wasm?module";
 import { initWasm } from "@trustwallet/wallet-core";
 import { FLOW_BIP44_PATH } from "./constants";
+const x = wasmModule;
 
 const generateSeedPhrase = async (
 	strength: number = 128,

@@ -8,13 +8,23 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import Image from "next/image";
 export default function Page() {
   return (
-    <Card className="w-[800px] overflow-hidden">
+    <Card className="max-w-[800px] overflow-hidden">
       <CardHeader>
-        <div className="flex items-center gap-2">
-          <PocketKnife className="size-8"/>
-          <CardTitle className="text-2xl font-extrabold tracking-tight lg:text-4xl">Flow Wallet Tool Kits</CardTitle>
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
+            {/* <PocketKnife className="size-8"/> */}
+            <Image
+            src="/flow-logo.svg"
+            width={32}
+            height={32}
+            alt="Flow Blockchain"
+            className="cursor-pointer"
+          />
+            <CardTitle className="text-2xl font-extrabold tracking-tight lg:text-4xl">Flow Wallet Tool Kits</CardTitle>
+          </div>
         </div>
         <CardDescription className="text-lg">A collection of tools for Flow blockchain</CardDescription>
       </CardHeader>
@@ -46,8 +56,7 @@ export default function Page() {
       <CardFooter className="bg-green-500/10 flex items-center gap-2 pt-4">
         <Info className="size-8 text-green-500" />
         <p className="text-sm text-muted-foreground">
-          This is an open-source project - all code is publicly verifiable. We never collect, store, or transmit private keys or seed phrases. 
-          All private key analysis happens locally in your browser with no server calls. Your security is our priority.
+          This is an open-source project - all code is publicly verifiable. We NEVER collect, store, or transmit private keys or seed phrases. Your security is our priority.
         </p>
       </CardFooter>
     </Card>

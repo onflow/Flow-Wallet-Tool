@@ -11,7 +11,9 @@ import {
     AppleIcon,
     ListOrdered,
     CaseLower,
-    TextIcon
+    TextIcon,
+    UserRoundPlus,
+    Plus
   } from "lucide-react"
 
 export const sidebarData = {
@@ -21,6 +23,11 @@ export const sidebarData = {
         url: "#",
         icon: UserRound,
         items: [
+            {
+            title: "Create",
+            url: "#",
+            icon: UserRoundPlus,
+            },
           {
             title: "Lookup",
             url: "#",
@@ -39,6 +46,11 @@ export const sidebarData = {
         icon: KeyRound,
         isActive: true,
         items: [
+            {
+            title: "Generate",
+            url: "#",
+            icon: Plus,
+            },
           {
             title: "Seed Phrase",
             url: "/key/seed-phrase",

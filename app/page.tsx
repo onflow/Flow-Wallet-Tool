@@ -1,4 +1,4 @@
-import { Info, PocketKnife } from "lucide-react";
+import { Info } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -48,7 +48,7 @@ export default function Page() {
           <li>Learn best practices for wallet development</li>
         </ul>
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          Whether you're a developer building on Flow or a user trying to understand wallet
+          Whether you&apos;re a developer building on Flow or a user trying to understand wallet
           mechanics, these tools provide practical solutions and educational resources.
         </p>
       </CardContent>

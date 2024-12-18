@@ -1,6 +1,12 @@
 import { initWasm } from "@trustwallet/wallet-core";
 import { FLOW_BIP44_PATH } from "./constants";
 
+const generateSeedPhrase = async (strength: number = 128, passphrase: string = "") => {
+  const { HDWallet } = await initWasm();
+  const wallet = HDWallet.create(strength, passphrase);
+  return wallet.mnemonic();
+}
+
 const jsonToKey = async (json: string, password: string) => {
   const { StoredKey, PrivateKey } = await initWasm();
   const keystore = StoredKey.importJSON(Buffer.from(json, "utf-8"));
@@ -61,4 +67,4 @@ const seed2PubKey = async (seed: string) => {
   };
 };
 
-export { jsonToKey, pk2PubKey, seed2PubKey };
+export { generateSeedPhrase, jsonToKey, pk2PubKey, seed2PubKey };

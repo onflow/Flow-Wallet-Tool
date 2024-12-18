@@ -48,7 +48,7 @@ export const sidebarData = {
         items: [
             {
             title: "Generate",
-            url: "#",
+            url: "/key/generate",
             icon: Plus,
             },
           {

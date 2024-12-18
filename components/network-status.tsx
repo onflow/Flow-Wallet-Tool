@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronsUpDown, Plus } from "lucide-react"
+import { ChevronsUpDown } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -18,9 +19,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
+const networks = [
+  { name: "Mainnet", color: "bg-green-500" },
+  { name: "Testnet", color: "bg-orange-500" },
+]
+
 export function NetworkStatus() {
   const { isMobile } = useSidebar()
-//   const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const [activeNetwork, setActiveNetwork] = React.useState(networks[0])
 
   return (
     <SidebarMenu>
@@ -32,11 +38,11 @@ export function NetworkStatus() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
                 <div className="flex aspect-square items-center justify-center size-8">
-                    <div className="flex aspect-square size-3 rounded-2xl bg-green-500"/>
+                    <div className={`flex aspect-square size-3 rounded-2xl ${activeNetwork.color}`}/>
                 </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  Flow Mainnet
+                  Flow {activeNetwork.name}
                 </span>
                 <div className="flex items-center gap-1">
                 <span className="truncate text-xs text-green-500">{`Available`}</span>
@@ -52,28 +58,22 @@ export function NetworkStatus() {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
+              Network
             </DropdownMenuLabel>
-            {/* {teams.map((team, index) => (
+            {networks.map((network, index) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={network.name}
+                onClick={() => setActiveNetwork(network)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
+                  <div className={`${network.color} size-2 shrink-0 rounded-full`} />
                 </div>
-                {team.name}
+                {network.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
-            ))} */}
+            ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

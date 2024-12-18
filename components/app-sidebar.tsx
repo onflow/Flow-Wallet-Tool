@@ -15,6 +15,7 @@ import {
 import { NetworkStatus } from "./network-status"
 import { sidebarData } from "./config/sidebar-data"
 import Image from "next/image"
+import Link from 'next/link'
 
 export function AppSidebar() {
   return (
@@ -27,7 +28,7 @@ export function AppSidebar() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               asChild
             >
-              <a href="/">
+              <Link href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-green-400">
                   <Image 
                     src="/logo.png" 
@@ -47,7 +48,7 @@ export function AppSidebar() {
                     Tool Kits
                   </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

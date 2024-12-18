@@ -1,51 +1,49 @@
 /** @type {import('next').NextConfig} */
-import { cp } from "node:fs/promises";
+import CopyPlugin from "copy-webpack-plugin";
+import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const nextConfig = {
-	async rewrites() {
-		// Copy wallet-core files to public directory during build
-		await cp(
-			"node_modules/@trustwallet/wallet-core/dist/lib/wallet-core.wasm",
-			"public/wallet-core.wasm",
-			{
-				recursive: true,
-			}
-		);
-		return [];
+	reactStrictMode: true,
+	publicRuntimeConfig: {
+	  basePath: "",
 	},
+	// compiler: {
+	//   removeConsole: process.env.NEXT_PUBLIC_ENV === "dev" ? false : true,
+	// },
 	webpack: (config, { isServer }) => {
-		// Handle Node.js polyfills
-		config.resolve.fallback = {
-			fs: false,
-			"fs/promises": false,
-			net: false,
-			tls: false,
-			crypto: false,
-			path: false,
-			stream: false,
-			util: false,
-			buffer: false,
-			process: false,
-		};
-
-		// Handle WASM
-		config.experiments = {
-			...config.experiments,
-			asyncWebAssembly: true,
-			layers: true,
-		};
-
-		// Add WASM file loader
-		config.module.rules.push({
-			test: /wallet-core.wasm$/,
-			type: "asset/resource",
-			generator: {
-				filename: "vendor-chunks/wallet-core.wasm",
+	  config.plugins.push(
+		new CopyPlugin({
+		  patterns: [
+			{
+			  from: path.join(
+				__dirname,
+				"node_modules/@trustwallet/wallet-core/dist/lib/wallet-core.wasm",
+			  ),
+			  to: path.join(__dirname, ".next/static/chunks/pages/key"),
 			},
-		});
-
-		return config;
+		  ],
+		}),
+	  );
+	  config.experiments.asyncWebAssembly = true;
+	  if (!isServer) {
+		config.output.publicPath = `/_next/`;
+	  } else {
+		config.output.publicPath = `./`;
+	  }
+	  config.resolve.fallback = { fs: false };
+	  config.output.assetModuleFilename = `node_modules/@trustwallet/dist/lib/wallet-core.wasm`;
+	  config.module.rules.push({
+		test: /\.(wasm)$/,
+		type: "asset/resource",
+	  });
+	  return config;
 	},
-};
+  };
+  
 
 export default nextConfig;

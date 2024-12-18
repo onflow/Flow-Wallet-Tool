@@ -4,7 +4,6 @@ import {
     Key,
     Braces,
     UserRound,
-    EyeIcon,
     Link,
     HardDrive,
     Cloud,
@@ -13,7 +12,8 @@ import {
     CaseLower,
     TextIcon,
     UserRoundPlus,
-    Plus
+    Plus,
+    Binoculars
   } from "lucide-react"
 
 export const sidebarData = {
@@ -29,9 +29,9 @@ export const sidebarData = {
             icon: UserRoundPlus,
             },
           {
-            title: "Lookup",
-            url: "#",
-            icon: EyeIcon,
+            title: "Lookup by Key",
+            url: "/account/lookup",
+            icon: Binoculars,
           },
           {
             title: "Link",

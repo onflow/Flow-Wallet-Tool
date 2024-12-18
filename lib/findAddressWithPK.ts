@@ -1,4 +1,4 @@
-import { pk2PubKey, seed2PubKey } from "./key";
+import { pk2PubKey, seed2PubKey } from "./key-tool";
 import { findAddressWithKey } from "./findAddressWithPubKey";
 
 interface PubKeyTuple {

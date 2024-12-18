@@ -15,7 +15,6 @@ export default function Page() {
       <CardHeader>
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
-            {/* <PocketKnife className="size-8"/> */}
             <Image
             src="/flow-logo.svg"
             width={32}

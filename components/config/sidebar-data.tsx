@@ -13,7 +13,8 @@ import {
     TextIcon,
     UserRoundPlus,
     Plus,
-    Binoculars
+    Binoculars,
+    Hash
   } from "lucide-react"
 
 export const sidebarData = {
@@ -35,7 +36,7 @@ export const sidebarData = {
           },
           {
             title: "Link",
-            url: "#",
+            url: "/account/link",
             icon: Link
           },
         ],
@@ -79,7 +80,7 @@ export const sidebarData = {
         ],
       },
       {
-        title: "Encode & Decode",
+        title: "Codable",
         url: "#",
         icon: Bot,
         items: [
@@ -94,8 +95,13 @@ export const sidebarData = {
             icon: TextIcon
           },
           {
-            title: "iOS Config Encode",
-            url: "/code/ios-config-encode",
+            title: "Hash",
+            url: "/code/hash",
+            icon: Hash
+          },
+          {
+            title: "AES",
+            url: "/code/aes",
             icon: AppleIcon
           },
         ],

@@ -26,7 +26,6 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [mnemonic, setMnemonic] = useState("");
-  const [pk, setPk] = useState("");
   const [pubKeys, setPubKeys] = useState<{
     P256: { pubK: string; pk: string };
     SECP256K1: { pubK: string; pk: string };
@@ -39,13 +38,12 @@ export default function Page() {
     try {
       const ks = JSON.parse(keystore);
       setKeystore(JSON.stringify(ks, null, 2));
-
       const pk = await jsonToKey(keystore, password);
       const pkHex = Buffer.from(pk.data()).toString("hex");
-      setPk(pkHex);
       const pubKeys = await pk2PubKey(pkHex);
       setPubKeys(pubKeys);
     } catch (error) {
+      console.error("Error keystore:", error);
       try {
         const mnemonic = await jsonToMnemonic(keystore, password);
         setMnemonic(mnemonic);

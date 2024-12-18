@@ -21,7 +21,7 @@ const jsonToKey = async (json: string, password: string) => {
 };
 
 const jsonToMnemonic = async (json: string, password: string) => {
-	const { StoredKey, PrivateKey } = await initWasm();
+	const { StoredKey } = await initWasm();
 	const keystore = StoredKey.importJSON(Buffer.from(json, "utf-8"));
 	const mnemonic = await keystore.decryptMnemonic(
 		Buffer.from(password, "utf-8")

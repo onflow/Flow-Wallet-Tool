@@ -29,6 +29,20 @@ const jsonToMnemonic = async (json: string, password: string) => {
 	return mnemonic;
 };
 
+const pk2KeyStore = async (pk: string, password: string) => {
+	const { StoredKey, CoinType } = await initWasm();
+	const privateKey = Buffer.from(pk, "hex");
+	const keystore = StoredKey.importPrivateKey(privateKey, "tempKeyStore", Buffer.from(password, "utf-8"), CoinType.ethereum);
+	const json = keystore.exportJSON();
+	return Buffer.from(json).toString("utf-8");
+}
+
+const seed2KeyStore = async (seed: string, password: string) => {
+	const { StoredKey, CoinType } = await initWasm();
+	const keystore = StoredKey.importHDWallet(seed, "tempKeyStore", Buffer.from(password, "utf-8"), CoinType.ethereum);
+	const json = keystore.exportJSON();
+	return Buffer.from(json).toString("utf-8");
+}
 
 const pk2PubKey = async (pk: string) => {
 	const { PrivateKey } = await initWasm();
@@ -81,4 +95,4 @@ const seed2PubKey = async (seed: string, path: string = FLOW_BIP44_PATH, passphr
 	};
 };
 
-export { generateSeedPhrase, jsonToKey, jsonToMnemonic, pk2PubKey, seed2PubKey };
+export { generateSeedPhrase, jsonToKey, pk2KeyStore, seed2KeyStore, jsonToMnemonic, pk2PubKey, seed2PubKey };

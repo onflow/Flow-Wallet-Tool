@@ -7,14 +7,14 @@ import {
     Link,
     HardDrive,
     Cloud,
-    AppleIcon,
     ListOrdered,
     CaseLower,
     TextIcon,
     UserRoundPlus,
     Plus,
     Binoculars,
-    Hash
+    Hash,
+    Shield
   } from "lucide-react"
 
 export const sidebarData = {
@@ -102,7 +102,7 @@ export const sidebarData = {
           {
             title: "AES",
             url: "/code/aes",
-            icon: AppleIcon
+            icon: Shield
           },
         ],
       }

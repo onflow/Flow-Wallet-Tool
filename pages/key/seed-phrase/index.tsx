@@ -13,11 +13,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-separator";
-import { Eye, EyeOff, ListOrdered } from "lucide-react";
+import { Eye, EyeOff, ListOrdered, Download, FileCode } from "lucide-react";
 import { KeyInfoCard } from "@/components/key-info-card";
-import { seed2PubKey } from "@/lib/key-tool";
+import { seed2KeyStore, seed2PubKey } from "@/lib/key-tool";
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,6 +36,9 @@ export default function Page() {
     P256: { pubK: string; pk: string };
     SECP256K1: { pubK: string; pk: string };
   } | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [keystorePassword, setKeystorePassword] = useState("");
+  const [showKeystorePassword, setShowKeystorePassword] = useState(false);
 
   const { toast } = useToast()
 
@@ -42,6 +53,36 @@ export default function Page() {
         title: "Uh oh! Something went wrong.",
         description: "Please check your seed phrase and derivation path.",
       })
+    }
+  };
+
+  const handleExportKeystore = async () => {
+    if (!pubKeys || !keystorePassword) return;
+    try {
+      const keystoreJSON = await seed2KeyStore(seedPhrase, keystorePassword);
+      const blob = new Blob([JSON.stringify(JSON.parse(keystoreJSON), null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const randomHex = Math.random().toString(16).slice(2, 8);
+      a.href = url;
+      a.download = `flow-wallet-sp-${randomHex}.json`;
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setDialogOpen(false);
+      setKeystorePassword("");
+      toast({
+        title: "Success",
+        description: "Keystore file downloaded successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Failed to generate keystore",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+      });
     }
   };
 
@@ -111,26 +152,82 @@ export default function Page() {
       </CardContent>
       { pubKeys && (
         <div>
-        <Separator className="bg-border h-px" />
-        <CardFooter className="flex flex-col justify-between mt-4">
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-4 max-w-[800px]">
-              {[
-                { title: "P256", data: pubKeys?.P256 },
-                { title: "secp256k1", data: pubKeys?.SECP256K1 }
-              ].map((curve) => (
-                <KeyInfoCard
-                  key={curve.title}
-                  title={curve.title}
-                  privateKey={curve.data?.pk}
-                  publicKey={curve.data?.pubK}
-                />
-              ))}
+          <Separator className="bg-border h-px" />
+          <CardFooter className="flex flex-col justify-between mt-4">
+            <div className="flex flex-col gap-2 w-full">
+              <div className="flex gap-4 max-w-[800px]">
+                {[
+                  { title: "P256", data: pubKeys?.P256 },
+                  { title: "secp256k1", data: pubKeys?.SECP256K1 }
+                ].map((curve) => (
+                  <KeyInfoCard
+                    key={curve.title}
+                    title={curve.title}
+                    privateKey={curve.data?.pk}
+                    publicKey={curve.data?.pubK}
+                  />
+                ))}
+              </div>
+              <Separator className="bg-border h-px mt-4" />
+              <Button 
+                className="w-full mt-4"
+                onClick={() => setDialogOpen(true)}
+              >
+                <FileCode className="mr-2 h-4 w-4" />
+                Export Keystore
+              </Button>
             </div>
-          </div>
-        </CardFooter>
+          </CardFooter>
         </div>
       )}
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Keystore File</DialogTitle>
+            <DialogDescription>
+              Please enter a password to encrypt your private key. You will need this password to decrypt the keystore file later.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="keystore-password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="keystore-password"
+                  type={showKeystorePassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  value={keystorePassword}
+                  onChange={(e) => setKeystorePassword(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3"
+                  onClick={() => setShowKeystorePassword(!showKeystorePassword)}
+                >
+                  {showKeystorePassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              className="w-full" 
+              onClick={handleExportKeystore} 
+              disabled={!keystorePassword}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

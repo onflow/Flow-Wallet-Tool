@@ -27,6 +27,7 @@ import { generateSeedPhrase, seed2PubKey } from "@/lib/key-tool";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { CopyableText } from "@/components/copyable-text";
+import { KeyInfoCard } from "@/components/key-info-card";
 
 export default function Page() {
   const [loading, setLoading] = React.useState(false);
@@ -129,38 +130,25 @@ export default function Page() {
                 <Copy className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-sm">{seedPhrase}</p>
-          <Separator className="bg-border h-px mb-2" /> 
+            <CopyableText value={seedPhrase} />
+          <Separator className="bg-border h-px my-2" /> 
             <div className="flex flex-col gap-4">
               {[
                 { title: "P256", data: pubKeys?.P256 },
                 { title: "secp256k1", data: pubKeys?.SECP256K1 }
               ].map((curve) => (
-                <Card key={curve.title}>
-                  <CardHeader className="bg-sidebar py-2">
-                    <p className="text-md font-medium text-muted-foreground uppercase">{curve.title}</p>
-                  </CardHeader>
-                  <CardContent className="flex flex-col gap-2 mt-2">
-                    {[
-                      { label: "Private Key", value: curve.data?.pk },
-                      { label: "Public Key", value: curve.data?.pubK }
-                    ].map((field, index) => (
-                      <div key={field.label}>
-                        <div className="flex items-center gap-2 justify-between">
-                          <p className="text-sm font-medium text-muted-foreground">{field.label}</p>
-                        </div>
-                        <CopyableText value={field.value} />
-                        {index === 0 && <Separator className="bg-border h-px" />}
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
+                <KeyInfoCard
+                  key={curve.title}
+                  title={curve.title}
+                  privateKey={curve.data?.pk}
+                  publicKey={curve.data?.pubK}
+                />
               ))}
             </div>
           </div>
         </CardFooter>
         </div>
-        )}
+      )}
     </Card>
   );
 }

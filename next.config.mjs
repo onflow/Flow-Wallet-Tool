@@ -8,17 +8,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const nextConfig = {
-	reactStrictMode: false,
-	swcMinify: true,
-	images: {
-	  unoptimized: true,
-	},
+	reactStrictMode: true,
 	publicRuntimeConfig: {
 	  basePath: "",
 	},
-	compiler: {
-	  removeConsole: process.env.NEXT_PUBLIC_ENV === "dev" ? false : true,
-	},
+	// compiler: {
+	//   removeConsole: process.env.NEXT_PUBLIC_ENV === "dev" ? false : true,
+	// },
 	webpack: (config, { isServer }) => {
 	  config.plugins.push(
 		new CopyPlugin({

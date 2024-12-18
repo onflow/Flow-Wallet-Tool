@@ -13,7 +13,8 @@ import {
     CaseLower,
     TextIcon,
     UserRoundPlus,
-    Plus
+    Plus,
+    Binoculars
   } from "lucide-react"
 
 export const sidebarData = {
@@ -29,9 +30,9 @@ export const sidebarData = {
             icon: UserRoundPlus,
             },
           {
-            title: "Lookup",
-            url: "#",
-            icon: EyeIcon,
+            title: "Lookup by Key",
+            url: "/account/lookup",
+            icon: Binoculars,
           },
           {
             title: "Link",

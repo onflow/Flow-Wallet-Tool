@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-separator";
-import { Eye, EyeOff, ListOrdered, Loader2 } from "lucide-react";
+import { Braces, Eye, EyeOff, Loader2 } from "lucide-react";
 import { KeyInfoCard } from "@/components/key-info-card";
 import {
   jsonToKey,
@@ -70,10 +70,10 @@ export default function Page() {
     <Card className="min-w-[450px] max-w-[650px] overflow-hidden">
       <CardHeader className="bg-sidebar">
         <div className="flex items-center gap-2">
-          <ListOrdered />
-          <CardTitle>Seed Phrase</CardTitle>
+          <Braces />
+          <CardTitle>Keystore </CardTitle>
         </div>
-        <CardDescription>Derive Keys from Seed Phrase</CardDescription>
+        <CardDescription>Derive Keys from Keystore File</CardDescription>
       </CardHeader>
       <Separator className="bg-border h-px" />
       <CardContent className="pt-4">

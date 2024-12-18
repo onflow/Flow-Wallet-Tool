@@ -10,6 +10,12 @@ const generateSeedPhrase = async (
 	return wallet.mnemonic();
 };
 
+const generatePrivateKey = async () => {
+	const { PrivateKey } = await initWasm();
+	const pk = PrivateKey.create()
+	return Buffer.from(pk.data()).toString("hex")
+};
+
 const jsonToKey = async (json: string, password: string) => {
 	const { StoredKey, PrivateKey } = await initWasm();
 	const keystore = StoredKey.importJSON(Buffer.from(json, "utf-8"));
@@ -95,4 +101,4 @@ const seed2PubKey = async (seed: string, path: string = FLOW_BIP44_PATH, passphr
 	};
 };
 
-export { generateSeedPhrase, jsonToKey, pk2KeyStore, seed2KeyStore, jsonToMnemonic, pk2PubKey, seed2PubKey };
+export { generateSeedPhrase, generatePrivateKey, jsonToKey, pk2KeyStore, seed2KeyStore, jsonToMnemonic, pk2PubKey, seed2PubKey };

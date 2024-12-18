@@ -1,4 +1,6 @@
 "use server";
+// @ts-ignore-next-line
+import * as wasmModule from "@trustwallet/wallet-core/dist/lib/wallet-core.wasm?module";
 import { initWasm } from "@trustwallet/wallet-core";
 import { FLOW_BIP44_PATH } from "./constants";
 

@@ -127,30 +127,43 @@ export default function Page() {
           <Label htmlFor="key-type">Config</Label>
           
             <div className="flex flex-col gap-2 border rounded-md p-2 items-start ">
-              <div className="flex gap-2 w-full">
-                <Input
-                  placeholder="Derivation Path"
-                  className="grow"
-                  value={derivationPath}
-                  onChange={(e) => setDerivationPath(e.target.value)}
-                />
-                <ToggleGroup
-                  type="single"
-                  defaultValue="128"
-                  onValueChange={setBitLength}
-                  value={bitLength}
-                >
-                  <ToggleGroupItem value="128">12</ToggleGroupItem>
-                  <ToggleGroupItem value="160">15</ToggleGroupItem>
-                  <ToggleGroupItem value="256">24</ToggleGroupItem>
-                </ToggleGroup>
+              <div className="flex flex-col gap-2 w-full">
+                <div className="flex gap-2 w-full">
+                <div className="flex flex-col gap-2 w-full">
+                  <Label htmlFor="derivation-path" className="text-muted-foreground text-xs">Derivation Path</Label>
+                  <Input
+                    id="derivation-path"
+                    placeholder="Derivation Path"
+                    className="grow"
+                    value={derivationPath}
+                    onChange={(e) => setDerivationPath(e.target.value)}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="word-count" className="text-muted-foreground text-xs">Word Count</Label>
+                  <ToggleGroup
+                      type="single"
+                      defaultValue="128"
+                      onValueChange={setBitLength}
+                      value={bitLength}
+                    >
+                      <ToggleGroupItem value="128">12</ToggleGroupItem>
+                      <ToggleGroupItem value="160">15</ToggleGroupItem>
+                      <ToggleGroupItem value="256">24</ToggleGroupItem>
+                    </ToggleGroup>
+                  </div>
+                </div>
               </div>
-              <Input
-                placeholder="Passphrase (Optional)"
-                className="grow"
-                value={passphrase}
-                onChange={(e) => setPassphrase(e.target.value)}
-              />
+              <div className="flex flex-col gap-2 w-full">
+                <Label htmlFor="passphrase" className="text-muted-foreground text-xs">Passphrase</Label>
+                <Input
+                  id="passphrase"
+                  placeholder="Optional"
+                  className="grow"
+                  value={passphrase}
+                  onChange={(e) => setPassphrase(e.target.value)}
+                />
+              </div>
             </div>
         </div>
         )}

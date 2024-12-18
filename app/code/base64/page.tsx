@@ -12,7 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-separator";
-import { ListOrdered } from "lucide-react";
+import { CaseLower } from "lucide-react";
 
 export default function Page() {
   const [base64Text, setBase64Text] = React.useState("");
@@ -60,7 +60,7 @@ export default function Page() {
     <Card className="w-4/5 h-4/5 overflow-hidden">
       <CardHeader className="bg-sidebar">
         <div className="flex items-center gap-2">
-          <ListOrdered />
+          <CaseLower />
           <CardTitle>Base64</CardTitle>
         </div>
         <CardDescription>Encode and Decode Base64</CardDescription>
@@ -80,13 +80,15 @@ export default function Page() {
           </div>
           <div className="flex flex-col space-y-1.5 h-full">
             <Label htmlFor="original-text">Original Text</Label>
-            <Textarea
-              id="original-text"
-              className={`h-[calc(100%-28px)] ${originalError ? 'border-red-500' : ''}`}
-              placeholder="Enter text to encode to base64"
-              value={originalText}
-              onChange={handleOriginalTextChange}
-            />
+            <div className="relative h-[calc(100%-28px)]">
+              <Textarea
+                id="original-text"
+                className={`h-full ${originalError ? 'border-red-500' : ''}`}
+                placeholder="Enter text to encode to base64"
+                value={originalText}
+                onChange={handleOriginalTextChange}
+              />
+            </div>
           </div>
         </div>
       </CardContent>

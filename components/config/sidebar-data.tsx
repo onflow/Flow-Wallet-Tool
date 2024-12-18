@@ -4,7 +4,6 @@ import {
     Key,
     Braces,
     UserRound,
-    EyeIcon,
     Link,
     HardDrive,
     Cloud,

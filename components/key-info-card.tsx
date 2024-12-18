@@ -18,7 +18,7 @@ export function KeyInfoCard({ title, privateKey, publicKey }: KeyInfoCardProps) 
       </CardHeader>
       <CardContent className="flex flex-col gap-2 mt-2">
         {[
-          { label: "Private Key", value: privateKey },
+          ...(privateKey ? [{ label: "Private Key", value: privateKey }] : []),
           { label: "Public Key", value: publicKey }
         ].map((field, index) => (
           <div key={field.label}>
@@ -26,18 +26,19 @@ export function KeyInfoCard({ title, privateKey, publicKey }: KeyInfoCardProps) 
               <p className="text-sm font-medium text-muted-foreground">{field.label}</p>
             </div>
             <CopyableText value={field.value} />
-            {index === 0 && <Separator className="bg-border h-px" />}
+            {index === 0 && privateKey && <Separator className="bg-border h-px" />}
           </div>
         ))}
       </CardContent>
       <CardFooter className="h">
       <Button 
-        className="w-full" 
+        // className="w-full" 
+        variant="secondary"
         onClick={() => window.location.href = `/account/lookup?publicKey=${publicKey}`}
       >
-        Search <ArrowRight className="ml-2 h-4 w-4" />
+        Lookup <ArrowRight className="ml-2 h-4 w-4" />
       </Button>
       </CardFooter>
     </Card>
   );
-} 
+}

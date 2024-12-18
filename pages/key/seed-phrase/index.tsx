@@ -13,15 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-separator";
-import { ListOrdered, Loader2 } from "lucide-react";
+import { ListOrdered } from "lucide-react";
 import { KeyInfoCard } from "@/components/key-info-card";
 import { seed2PubKey } from "@/lib/key-tool";
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
-import { ToastAction } from "@/components/ui/toast"
 
 export default function Page() {
-  const [loading, setLoading] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState("");
   const [passphrase, setPassphrase] = useState("");
   const [derivationPath, setDerivationPath] = useState("m/44'/539'/0'/0/0");
@@ -34,7 +32,6 @@ export default function Page() {
 
   const handleSearch = async () => {
     try {
-      setLoading(true);
       const pubKey = await seed2PubKey(seedPhrase, derivationPath, passphrase);
       setPubKeys(pubKey);
     } catch (error) {
@@ -44,8 +41,6 @@ export default function Page() {
         title: "Uh oh! Something went wrong.",
         description: "Please check your seed phrase and derivation path.",
       })
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -56,7 +51,7 @@ export default function Page() {
           <ListOrdered />
           <CardTitle>Seed Phrase</CardTitle>
         </div>
-        <CardDescription>Find Flow Account by Seed Phrase</CardDescription>
+        <CardDescription>Derive Keys from Seed Phrase</CardDescription>
       </CardHeader>
       <Separator className="bg-border h-px" />
       <CardContent className="pt-4">

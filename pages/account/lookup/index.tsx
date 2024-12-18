@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState} from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -12,54 +12,60 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@radix-ui/react-separator";
-import { ArrowRight, Binoculars, Loader2 } from "lucide-react";
+import { Binoculars, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/router";
 import { findAddressWithKey } from "@/lib/findAddressWithPubKey";
-import { KeyInfoCard } from "@/components/key-info-card";
-import { CopyableText } from "@/components/copyable-text";
 import { AccountKeyCard } from "@/components/account-key-card";
+import { AccountKey } from "@/lib/findAddressWithPubKey";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
-  const [pubKey, setPubKey] = useState("");
   const router = useRouter();
   const { query } = router;
+  const [pubKey, setPubKey] = useState<string>("");
   const { toast } = useToast()
-  const [accounts, setAccounts] = useState<any[]>([]);
+  const [accounts, setAccounts] = useState<AccountKey[]>([]);
+
+  const handleSearch = useCallback(async (publicKey?: string) => {
+    const pubK = publicKey || pubKey;
+    if (!pubK) return;
+    setLoading(true);
+    try {
+      const result = await findAddressWithKey(pubK);
+      if (result) {
+        setAccounts(result);
+      }
+      if (!result || result.length === 0) {
+        toast({
+          variant: "destructive",
+          title: "No accounts found",
+          description: "No accounts found for the given public key.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [pubKey, toast]);
 
   useEffect(() => {
     if (query.publicKey) {
-        setPubKey(query.publicKey as string);
-        handleSearch();
+      setPubKey(query.publicKey as string);
+      handleSearch(query.publicKey as string);
     }
-  }, [query.publicKey]);
+  }, [query.publicKey, handleSearch]);
 
-  const handleSearch = async () => {
-      if (!pubKey) return;
-      setLoading(true);
-      try {
-          const result = await findAddressWithKey(pubKey);
-          setAccounts(result);
-          if (!result || result.length === 0) {
-            toast({
-              variant: "destructive", 
-              title: "No accounts found",
-              description: "No accounts found for the given public key.",
-            })
-          }
-      } catch (error) {
-          console.error(error);
-          toast({
-            variant: "destructive", 
-            title: "Uh oh! Something went wrong.",
-            description: error instanceof Error ? error.message : "An unknown error occurred",
-          })
-      } finally {
-          setLoading(false);
-      }
-  }
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
 
   return (
     <Card className="min-w-[450px] max-w-[650px overflow-hidden">
@@ -84,7 +90,11 @@ export default function Page() {
               />
             </div>
         </div>
-        <Button className="w-full mt-4" onClick={handleSearch} disabled={loading}>
+        <Button 
+          className="w-full mt-4" 
+          onClick={() => handleSearch()} 
+          disabled={loading}
+        >
           {loading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : null}

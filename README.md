@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flow Wallet Tools
 
-## Getting Started
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fflow-wallet-tool.vercel.app)](https://flow-wallet-tool.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org)
+[![Flow](https://img.shields.io/badge/Flow-00EF8B?style=flat&logo=flow&logoColor=white)](https://flow.com)
+[![Vercel](https://img.shields.io/badge/Vercel-black?style=flat&logo=vercel&logoColor=white)](https://vercel.com)
 
-First, run the development server:
+## Live Demo
+Visit our live application at [flow-wallet-tool.vercel.app](https://flow-wallet-tool.vercel.app)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Description
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Flow Wallet Tools is a comprehensive web application that provides essential utilities for working with Flow blockchain accounts and data encoding. The application offers a user-friendly interface for managing Flow accounts and performing various encoding/decoding operations.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Account Management
+- **[Create Account](https://flow-wallet-tool.vercel.app/account/create)**: Create a new blockchain account from scratch
+- **[Lookup Account](https://flow-wallet-tool.vercel.app/account/lookup)**: Search and view account details using public key or address
+- **[Link Account](https://flow-wallet-tool.vercel.app/account/link)**: Connect and manage external wallet connections
 
-## Learn More
+### Key Management
+- **[Generate Key](https://flow-wallet-tool.vercel.app/key/generate)**: Create a new random wallet key pair
+- **[Seed Phrase](https://flow-wallet-tool.vercel.app/key/seed-phrase)**: Generate or recover wallet from BIP39 mnemonic phrase
+- **[Private Key](https://flow-wallet-tool.vercel.app/key/private-key)**: Import or export raw private key in hex format
+- **[KeyStore](https://flow-wallet-tool.vercel.app/key/keystore)**: Create or decrypt password-protected JSON wallet file
+- **[Verify Key](https://flow-wallet-tool.vercel.app/key/verify)**: Validate private key and address pair
 
-To learn more about Next.js, take a look at the following resources:
+### Transaction Tools
+- **[Analyze Transaction](https://flow-wallet-tool.vercel.app/key/analyze)**: Decode and inspect transaction details and parameters
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Encoding Utilities
+- **[Base64](https://flow-wallet-tool.vercel.app/code/base64)**: Encode and decode Base64 data formats
+- **[RLP](https://flow-wallet-tool.vercel.app/code/rlp)**: Encode and decode Recursive Length Prefix (RLP) data
+- **[RLP Transaction](https://flow-wallet-tool.vercel.app/code/rlpTx)**: Parse and create RLP-encoded blockchain transactions
+- **[Hash](https://flow-wallet-tool.vercel.app/code/hash)**: Calculate various cryptographic hash functions
+- **[AES](https://flow-wallet-tool.vercel.app/code/aes)**: Encrypt and decrypt data using AES encryption
+- **[Hex](https://flow-wallet-tool.vercel.app/code/hex)**: Convert between hexadecimal and other data formats
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Flow Blockchain](https://flow.com)
+- [Next.js](https://nextjs.org)
+- [Vercel](https://vercel.com)

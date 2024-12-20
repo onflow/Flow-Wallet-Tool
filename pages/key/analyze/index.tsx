@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from 'next/navigation';
 import {
   Card,
@@ -13,18 +13,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@radix-ui/react-separator";
-import { Loader2, Presentation } from "lucide-react";
+import { CheckCircle2, Loader2, Presentation, XCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button";
-import { findTxById, verifySignatureByAddress } from "@/lib/transaction-analyze";
+import { findTxById, FCLSignature, verifySignatureByAddressFirstKey } from "@/lib/transaction-analyze";
 import { CopyableText } from "@/components/copyable-text";
 
 interface TransactionDetails {
   encodedPayload: string;
   encodedEnvelope: string;
   cadence: string;
-  payloadSigs: Array<{ address: string; sig: string }>;
-  envelopeSigs: Array<{ address: string; sig: string }>;
+  payloadSigs: Array<FCLSignature>;
+  envelopeSigs: Array<FCLSignature>;
+}
+
+interface KeyInfo {
+  hashAlgoString?: string;
+  signAlgoString?: string;
+  weight?: number;
+  publicKey?: string;
+}
+
+interface KeyInfoWithSignature {
+  address: string;
+  index: number;
+  key: KeyInfo | null;
+  sig: string;
 }
 
 export default function Page() {
@@ -33,6 +48,76 @@ export default function Page() {
   const [txId, setTxId] = useState("");
   const [txDetails, setTxDetails] = useState<TransactionDetails | null>(null);
   const { toast } = useToast()
+  const [payloadKeyInfo, setPayloadKeyInfo] = useState<Array<{address: string, index: number, sig: KeyInfoWithSignature, key: KeyInfo | null}>>([]);
+  const [envelopeKeyInfo, setEnvelopeKeyInfo] = useState<Array<{address: string, index: number, sig: KeyInfoWithSignature, key: KeyInfo | null}>>([]);
+
+  const handleSearch = useCallback(async (id?: string) => {
+    const searchId = id || txId;
+    if (!searchId) return;
+    setLoading(true);
+    try {
+      const tx = await findTxById(searchId)
+      setTxDetails(tx)
+
+      console.log(tx)
+
+      const newPayloadKeyInfo = [];
+      for (const sig of tx.payloadSigs) {
+        const info = await verifySignatureByAddressFirstKey(sig.address, tx.encodedPayload, sig.sig)
+        console.log("newPayloadKeyInfo", info)
+        if (info) {
+          newPayloadKeyInfo.push({
+            address: sig.address,
+            index: info.index !== null ? info.index : -1,
+            key: info.key,
+            sig: sig
+          });
+          console.log(sig.address, info.index)
+        } else {
+          newPayloadKeyInfo.push({
+            address: sig.address,
+            index: -1,
+            key: null,
+            sig: sig
+          });
+        }
+      }
+      setPayloadKeyInfo(newPayloadKeyInfo);
+
+      const newEnvelopeKeyInfo = [];
+      for (const sig of tx.envelopeSigs) {
+        const info = await verifySignatureByAddressFirstKey(sig.address, tx.encodedEnvelope, sig.sig)
+        console.log("newEnvelopeKeyInfo", info)
+        if (info) {
+          newEnvelopeKeyInfo.push({
+            address: sig.address,
+            index: info.index !== null ? info.index : -1,
+            key: info.key,
+            sig: sig
+          });
+          console.log(sig.address, info.index)
+        } else {
+          newEnvelopeKeyInfo.push({
+            address: sig.address,
+            index: -1,
+            key: null,
+            sig: sig
+          });
+        }
+      }
+      setEnvelopeKeyInfo(newEnvelopeKeyInfo);
+
+    } catch (error) {
+        console.error(error);
+        toast({
+          variant: "destructive", 
+          title: "Uh oh! Something went wrong.",
+          description: error instanceof Error ? error.message : "An unknown error occurred",
+        })
+    } finally {
+        setLoading(false);
+    }
+  }, [txId, toast]);
 
   useEffect(() => {
     const txParam = searchParams.get('tx');
@@ -40,38 +125,7 @@ export default function Page() {
       setTxId(txParam);
       handleSearch(txParam);
     }
-  }, [searchParams]);
-
-  const handleSearch = async (id?: string) => {
-      const searchId = id || txId;
-      if (!searchId) return;
-      setLoading(true);
-      try {
-        const tx = await findTxById(searchId)
-        setTxDetails(tx)
-
-        console.log(tx)
-        tx.payloadSigs.forEach(async (sig: any) => {
-          const verified = await verifySignatureByAddress(sig.address, tx.encodedPayload, sig.sig)
-          console.log(sig.address, verified)
-        })
-
-        tx.envelopeSigs.forEach(async (sig: any) => {
-          const verified = await verifySignatureByAddress(sig.address, tx.encodedEnvelope, sig.sig)
-          console.log(sig.address, verified)
-        })
-
-      } catch (error) {
-          console.error(error);
-          toast({
-            variant: "destructive", 
-            title: "Uh oh! Something went wrong.",
-            description: error instanceof Error ? error.message : "An unknown error occurred",
-          })
-      } finally {
-          setLoading(false);
-      }
-  }
+  }, [searchParams, handleSearch]);
 
   return (
     <Card className="min-w-[650px] max-w-[850px] overflow-hidden">
@@ -107,9 +161,111 @@ export default function Page() {
         <>
           <Separator className="bg-border h-px" />
           <CardFooter className="flex flex-col p-4 gap-4 w-full">
-              {/* <Separator orientation="vertical" className="bg-border h-auto" /> */}
-              {/* <pre className="text-xs overflow-scroll">{JSON.stringify(txDetails, null, 2)}</pre> */}
               <div className="w-full flex flex-col gap-2">
+                <div className="flex flex-col gap-4">
+                  {payloadKeyInfo.length > 0 && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="text-lg font-semibold mb-4">Payload Signatures</h3>
+                      <div className="flex flex-col gap-4">
+                        {payloadKeyInfo.map((key, index) => (
+                          <div className="flex flex-col gap-3 p-4 border rounded-md" key={index}>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Label className="text-sm font-medium">
+                                  Payload {index + 1}
+                                  {key.index !== -1 && (
+                                    <span className="ml-2 text-muted-foreground">(Key #{key.index})</span>
+                                  )}
+                                </Label>
+                                {key.index === -1 ? (
+                                  <XCircle className="h-4 w-4 text-red-500" />
+                                ) : (
+                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                )}
+                              </div>
+                              {key.key && (
+                                <div className="flex gap-2">
+                                  <Badge variant="outline">{key.key?.hashAlgoString}</Badge>
+                                  <Badge variant="outline">{key.key?.signAlgoString}</Badge>
+                                  <Badge variant="outline">Weight: {key.key?.weight || 'N/A'}</Badge>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="grid gap-2">
+                              <div className="flex flex-col gap-1">
+                                <Label className="text-xs text-muted-foreground">Address</Label>
+                                <CopyableText value={key.address} />
+                              </div>
+                              
+                              <div className="flex flex-col gap-1">
+                                <Label className="text-xs text-muted-foreground">Public Key</Label>
+                                <CopyableText value={key.key?.publicKey || 'N/A'} />
+                              </div>
+                              
+                              <div className="flex flex-col gap-1">
+                                <Label className="text-xs text-muted-foreground">Signature</Label>
+                                <CopyableText value={key.sig.sig} />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {envelopeKeyInfo.length > 0 && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="text-lg font-semibold mb-4">Envelope Signatures</h3>
+                      <div className="flex flex-col gap-4">
+                        {envelopeKeyInfo.map((key, index) => (
+                          <div className="flex flex-col gap-3 p-4 border rounded-md" key={index}>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Label className="text-sm font-medium">
+                                  Envelope {index + 1}
+                                  {key.index !== -1 && (
+                                    <span className="ml-2 text-muted-foreground">(Key #{key.index})</span>
+                                  )}
+                                </Label>
+                                {key.index === -1 ? (
+                                  <XCircle className="h-4 w-4 text-red-500" />
+                                ) : (
+                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                )}
+                              </div>
+                              {key.key && (
+                                <div className="flex gap-2">
+                                  <Badge variant="outline">{key.key?.hashAlgoString}</Badge>
+                                  <Badge variant="outline">{key.key?.signAlgoString}</Badge>
+                                  <Badge variant="outline">Weight: {key.key?.weight || 'N/A'}</Badge>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="grid gap-2">
+                              <div className="flex flex-col gap-1">
+                                <Label className="text-xs text-muted-foreground">Address</Label>
+                                <CopyableText value={key.address} />
+                              </div>
+                              
+                              <div className="flex flex-col gap-1">
+                                <Label className="text-xs text-muted-foreground">Public Key</Label>
+                                <CopyableText value={key.key?.publicKey || 'N/A'} />
+                              </div>
+                              
+                              <div className="flex flex-col gap-1">
+                                <Label className="text-xs text-muted-foreground">Signature</Label>
+                                <CopyableText value={key.sig.sig} />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex flex-col items-start gap-2 overflow-scroll">
                   <Label className="text-xs text-muted-foreground">Encoded Payload</Label>
                   <CopyableText value={txDetails.encodedPayload} className="flex-1" />
@@ -118,13 +274,6 @@ export default function Page() {
                   <Label className="text-xs text-muted-foreground">Encoded Envelope</Label>
                   <CopyableText value={txDetails.encodedEnvelope} className="flex-1" />
                 </div>
-              </div>
-
-              <div className="flex flex-col w-full items-start gap-2">
-                  <Label className="text-xs text-muted-foreground">Cadence</Label>
-                  <code className="text-xs w-full overflow-scroll whitespace-pre-wrap border border-border rounded-md p-4">
-                    {txDetails.cadence}
-                  </code>
               </div>
           </CardFooter>
         </>

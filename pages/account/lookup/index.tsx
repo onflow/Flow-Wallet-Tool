@@ -16,9 +16,9 @@ import { Binoculars, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/router";
-import { findAddressWithKey } from "@/lib/findAddressWithPubKey";
+import { findAddressWithKey } from "@/lib/find-address-with-pubkey";
 import { AccountKeyCard } from "@/components/account-key-card";
-import { AccountKey } from "@/lib/findAddressWithPubKey";
+import { AccountKey } from "@/lib/find-address-with-pubkey";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);

@@ -16,7 +16,8 @@ import {
     CircleCheck,
     Binary,
     Presentation,
-    Blocks
+    Blocks,
+    ChartNoAxesGantt
   } from "lucide-react"
 
 export const sidebarData = {
@@ -93,7 +94,7 @@ export const sidebarData = {
         items: [
           {
             title: "Analyze",
-            url: "/tx/analyze",
+            url: "/key/analyze",
             icon: Presentation
           }
         ],
@@ -112,6 +113,11 @@ export const sidebarData = {
             title: "RLP",
             url: "/code/rlp",
             icon: TextIcon
+          },
+          {
+            title: "RLP Transaction",
+            url: "/code/rlpTx",
+            icon: ChartNoAxesGantt
           },
           {
             title: "Hash",

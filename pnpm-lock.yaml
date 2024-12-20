@@ -11,9 +11,15 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.9.1(react-hook-form@7.54.1(react@18.3.1))
+      '@onflow/decode':
+        specifier: ^0.0.11
+        version: 0.0.11
       '@onflow/fcl':
         specifier: ^1.13.3
         version: 1.13.3(@types/react@18.3.17)(google-protobuf@3.11.4)(jiti@2.4.2)(postcss@8.4.49)(react@18.3.1)
+      '@onflow/sdk':
+        specifier: ^1.5.6
+        version: 1.5.6
       '@onflow/transport-http':
         specifier: ^1.10.4
         version: 1.10.4
@@ -494,6 +500,9 @@ packages:
   '@onflow/config@1.5.1':
     resolution: {integrity: sha512-BmD67EhZEqMRePa3y/WIpC5hH/YF9gV9uv5bPSN39P3laYxd93Ojhdf6v0fXkjO/d3WaHylLPoXYgpW/g5seWA==}
 
+  '@onflow/decode@0.0.11':
+    resolution: {integrity: sha512-i4JTznywSpXTyBIwnrzEXqEBJRZu8xYDRS4Q0mTzP1+0GdESm+Wq44qvtN68vEcNNfSLJixKeGs/T0nvkJDh4A==}
+
   '@onflow/fcl-core@1.13.3':
     resolution: {integrity: sha512-E+UVVQpPqP5TSimpeU8AUfFCTCCHuwKIVbhpxFcSGH/cUA6rDlEVQQSYDN5gtil8Cdkb9KxCfm1j5Os3n+PZTQ==}
 
@@ -514,8 +523,14 @@ packages:
   '@onflow/sdk@1.5.5':
     resolution: {integrity: sha512-79h56lYB/4vi1Tn+QrICUpQZ0Jh8O5d8I0IC/3adAf2zU8xfxvkypw7Tfx58Zr03vip+0h83Ri3DwyZpqIM2sw==}
 
+  '@onflow/sdk@1.5.6':
+    resolution: {integrity: sha512-bvk2V4FAYH8M/2kSQK9YnETK4FY564daMx2nQjochwKRWzkax22R5qquQMQ3nj6TQauouMmtNzgTS1JNCyuBcA==}
+
   '@onflow/transport-http@1.10.4':
     resolution: {integrity: sha512-yZNqNEISnCaP7bsB+pwBjHT7+AYjADxUQpj8SccrTWnWlM6LEDIcNVCr8eBzrANug3o2Y1LuqSOhMiWYtbXs7w==}
+
+  '@onflow/transport-http@1.10.5':
+    resolution: {integrity: sha512-Gh1TWLe/ZfntVWmvex3Itz6OPxLS6D6cWj9L+52IhgmZLdLNgQTDxyddCg2WaNsyKch20u7T3vHXPyOtN52yBA==}
 
   '@onflow/typedefs@1.4.0':
     resolution: {integrity: sha512-7b4C3F4Ztayx6XdQz/7YoHMzZ6kzy37dLxdVCV/PAsAunq9Jfu32HQaf8a0NCk0L0aM7FS2zT1Om4k7b5KP4Xg==}
@@ -4052,6 +4067,8 @@ snapshots:
       - '@onflow/util-config'
       - supports-color
 
+  '@onflow/decode@0.0.11': {}
+
   '@onflow/fcl-core@1.13.3(google-protobuf@3.11.4)':
     dependencies:
       '@babel/runtime': 7.26.0
@@ -4199,7 +4216,48 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@onflow/sdk@1.5.6':
+    dependencies:
+      '@babel/runtime': 7.26.0
+      '@onflow/config': 1.5.1
+      '@onflow/rlp': 1.2.3
+      '@onflow/transport-http': 1.10.5
+      '@onflow/typedefs': 1.4.0
+      '@onflow/util-actor': 1.3.4
+      '@onflow/util-address': 1.2.3
+      '@onflow/util-invariant': 1.2.4
+      '@onflow/util-logger': 1.3.3
+      '@onflow/util-template': 1.2.3
+      deepmerge: 4.3.1
+      events: 3.3.0
+      sha3: 2.1.4
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@onflow/util-config'
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+
   '@onflow/transport-http@1.10.4':
+    dependencies:
+      '@babel/runtime': 7.26.0
+      '@onflow/util-address': 1.2.3
+      '@onflow/util-invariant': 1.2.4
+      '@onflow/util-logger': 1.3.3
+      '@onflow/util-template': 1.2.3
+      abort-controller: 3.0.0
+      cross-fetch: 4.0.0
+      events: 3.3.0
+      isomorphic-ws: 5.0.0(ws@8.18.0)
+      ws: 8.18.0
+    transitivePeerDependencies:
+      - '@onflow/util-config'
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
+  '@onflow/transport-http@1.10.5':
     dependencies:
       '@babel/runtime': 7.26.0
       '@onflow/util-address': 1.2.3

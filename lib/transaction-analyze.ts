@@ -106,5 +106,27 @@ const verifySignatureByAddress = async (address: string, message: string, sig: s
     return result.includes(true)
 }
 
-export type { FCLSignature };
-export { findTxById, verifySignatureByAddress };
+const verifySignatureByAddressFirstKey = async (address: string, message: string, sig: string ) => {
+    const fclAccount = await fcl.send([
+        fcl.getAccount(address)
+    ]).then(fcl.decode);
+
+    for (const [index, key] of fclAccount.keys.entries()) {
+        let hash: string | undefined;
+        if (key.hashAlgoString === "SHA2_256") {
+            hash = await createSha256Hash(message);
+        } else if (key.hashAlgoString === "SHA3_256") {
+            hash = await createSha3_256Hash(message);
+        }
+        if (!hash) return null;
+        const verified = await verifySignature(key.publicKey, sig, hash);
+        console.log('verified', verified)
+        if (verified) {
+            return {index, key};
+        }
+    }
+
+    return null
+}
+
+export { findTxById, verifySignatureByAddress, verifySignatureByAddressFirstKey };

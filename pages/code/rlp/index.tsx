@@ -15,27 +15,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-separator";
 import { TextIcon } from "lucide-react";
 import { encode, decode } from 'rlp';
+import { arrToStringArr} from "@/lib/rlp";
 
 export default function Page() {
   const [rlpText, setRlpText] = React.useState("");
   const [originalText, setOriginalText] = React.useState("");
   const [rlpError, setRlpError] = React.useState(false);
   const [originalError, setOriginalError] = React.useState(false);
-
-  function arrToStringArr(arr: Uint8Array | Uint8Array[]): string[] {
-    if (!Array.isArray(arr)) {
-      const hex = Buffer.from(arr).toString('hex');
-      return [hex ? '0x' + hex : ''];
-    }
-    
-    return arr.map((item) => {
-      if (item instanceof Uint8Array) {
-        const hex = Buffer.from(item).toString('hex');
-        return hex ? '0x' + hex : '';
-      }
-      return arrToStringArr(item as Uint8Array[]).join(',');
-    });
-  }
 
   const handleRlpChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -93,8 +79,15 @@ export default function Page() {
           <CardTitle>RLP</CardTitle>
         </div>
         <div className="flex items-center space-x-2">
-          <Label htmlFor="airplane-mode">Transaction</Label>
-          <Switch id="airplane-mode" />
+          <Label htmlFor="transaction-mode">Transaction</Label>
+          <Switch 
+            id="transaction-mode" 
+            onCheckedChange={(checked) => {
+              if (checked) {
+                window.location.href = "/code/rlpTx";
+              }
+            }}
+          />
         </div>
         </div>
         <CardDescription>Encode and Decode RLP (Recursive Length Prefix)</CardDescription>

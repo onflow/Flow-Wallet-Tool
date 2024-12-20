@@ -1,5 +1,5 @@
 import { pk2PubKey, seed2PubKey } from "./key-tool";
-import { findAddressWithKey, AccountKey } from "./findAddressWithPubKey";
+import { findAddressWithKey, AccountKey } from "./find-address-with-pubkey";
 
 interface PubKeyTuple {
   P256: { pubK: string; pk: string };

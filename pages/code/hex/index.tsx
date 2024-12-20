@@ -26,7 +26,7 @@ export default function Page() {
   const [outputText, setOutputText] = React.useState("");
   const [hexError, setHexError] = React.useState(false);
   const [outputError, setOutputError] = React.useState(false);
-  const [outputFormat, setOutputFormat] = React.useState<"base64" | "utf8">("base64");
+  const [outputFormat, setOutputFormat] = React.useState<"base64" | "utf8" | "int">("base64");
 
   const handleHexChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -35,19 +35,25 @@ export default function Page() {
 
     if (value.trim()) {
       try {
-        // Convert hex to bytes array
-        const bytes = new Uint8Array(
-          value.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []
-        );
-        
-        if (outputFormat === "base64") {
-          // Convert bytes to base64
-          const base64 = btoa(String.fromCharCode(...bytes));
-          setOutputText(base64);
+        if (outputFormat === "int") {
+          // Convert hex to integer
+          const num = parseInt(value, 16);
+          setOutputText(num.toString());
         } else {
-          // Convert bytes to UTF-8
-          const text = new TextDecoder().decode(bytes);
-          setOutputText(text);
+          // Convert hex to bytes array
+          const bytes = new Uint8Array(
+            value.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []
+          );
+          
+          if (outputFormat === "base64") {
+            // Convert bytes to base64
+            const base64 = btoa(String.fromCharCode(...bytes));
+            setOutputText(base64);
+          } else {
+            // Convert bytes to UTF-8
+            const text = new TextDecoder().decode(bytes);
+            setOutputText(text);
+          }
         }
       } catch {
         setHexError(true);
@@ -65,24 +71,31 @@ export default function Page() {
     
     if (text.trim()) {
       try {
-        let bytes: Uint8Array;
-        if (outputFormat === "base64") {
-          // Convert base64 to bytes
-          const binary = atob(text);
-          bytes = new Uint8Array(binary.length);
-          for (let i = 0; i < binary.length; i++) {
-            bytes[i] = binary.charCodeAt(i);
-          }
+        if (outputFormat === "int") {
+          // Convert integer to hex
+          const num = parseInt(text);
+          if (isNaN(num)) throw new Error("Invalid number");
+          setHexText(num.toString(16));
         } else {
-          // Convert UTF-8 string to bytes
-          bytes = new TextEncoder().encode(text);
+          let bytes: Uint8Array;
+          if (outputFormat === "base64") {
+            // Convert base64 to bytes
+            const binary = atob(text);
+            bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+              bytes[i] = binary.charCodeAt(i);
+            }
+          } else {
+            // Convert UTF-8 string to bytes
+            bytes = new TextEncoder().encode(text);
+          }
+          
+          // Convert bytes to hex
+          const hex = Array.from(bytes)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+          setHexText(hex);
         }
-        
-        // Convert bytes to hex
-        const hex = Array.from(bytes)
-          .map(b => b.toString(16).padStart(2, '0'))
-          .join('');
-        setHexText(hex);
       } catch {
         setOutputError(true);
         setHexText("Encoding failed");
@@ -92,20 +105,25 @@ export default function Page() {
     }
   };
 
-  const handleFormatChange = (value: "base64" | "utf8") => {
+  const handleFormatChange = (value: "base64" | "utf8" | "int") => {
     setOutputFormat(value);
     if (hexText.trim()) {
       try {
-        const bytes = new Uint8Array(
-          hexText.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []
-        );
-        
-        if (value === "base64") {
-          const base64 = btoa(String.fromCharCode(...bytes));
-          setOutputText(base64);
+        if (value === "int") {
+          const num = parseInt(hexText, 16);
+          setOutputText(num.toString());
         } else {
-          const text = new TextDecoder().decode(bytes);
-          setOutputText(text);
+          const bytes = new Uint8Array(
+            hexText.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || []
+          );
+          
+          if (value === "base64") {
+            const base64 = btoa(String.fromCharCode(...bytes));
+            setOutputText(base64);
+          } else {
+            const text = new TextDecoder().decode(bytes);
+            setOutputText(text);
+          }
         }
       } catch {
         setOutputError(true);
@@ -129,10 +147,11 @@ export default function Page() {
             <SelectContent>
               <SelectItem value="base64">Base64</SelectItem>
               <SelectItem value="utf8">UTF-8</SelectItem>
+              <SelectItem value="int">Integer</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <CardDescription>Convert between Hex and {outputFormat === "base64" ? "Base64" : "UTF-8"}</CardDescription>
+        <CardDescription>Convert between Hex and {outputFormat === "base64" ? "Base64" : outputFormat === "utf8" ? "UTF-8" : "Integer"}</CardDescription>
       </CardHeader>
       <Separator className="bg-border h-px" />
       <CardContent className="flex flex-col pt-4 pb-4 gap-8 h-[calc(100%-120px)]">
@@ -148,7 +167,7 @@ export default function Page() {
             />
           </div>
           <div className="flex flex-col space-y-1.5 h-full">
-            <Label htmlFor="output-text">{outputFormat === "base64" ? "Base64" : "UTF-8"} Text</Label>
+            <Label htmlFor="output-text">{outputFormat === "base64" ? "Base64" : outputFormat === "utf8" ? "UTF-8" : "Integer"} Text</Label>
             <div className="relative h-[calc(100%-28px)]">
               <Textarea
                 id="output-text"

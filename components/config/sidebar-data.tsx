@@ -31,16 +31,19 @@ export const sidebarData = {
             title: "Create",
             url: "/account/create",
             icon: UserRoundPlus,
+            description: "Create a new blockchain account from scratch",
             },
           {
             title: "Lookup by Key",
             url: "/account/lookup",
             icon: Binoculars,
+            description: "Search and view account details using public key or address",
           },
           {
             title: "Link",
             url: "/account/link",
-            icon: Link
+            icon: Link,
+            description: "Connect and manage external wallet connections",
           },
         ],
       },
@@ -48,32 +51,36 @@ export const sidebarData = {
         title: "Key",
         url: "/key",
         icon: KeyRound,
-        isActive: true,
         items: [
             {
             title: "Generate",
             url: "/key/generate",
             icon: Plus,
+            description: "Create a new random wallet key pair",
             },
           {
             title: "Seed Phrase",
             url: "/key/seed-phrase",
-            icon: ListOrdered
+            icon: ListOrdered,
+            description: "Generate or recover wallet from BIP39 mnemonic phrase",
           },
           {
             title: "Private Key",
             url: "/key/private-key",
-            icon: Key
+            icon: Key,
+            description: "Import or export raw private key in hex format",
           },
           {
             title: "KeyStore",
             url: "/key/keystore",
-            icon: Braces
+            icon: Braces,
+            description: "Create or decrypt password-protected JSON wallet file",
           },
           {
             title: "Verify",
             url: "/key/verify",
             icon: CircleCheck,
+            description: "Validate private key and address pair",
           },
           // {
           //   title: "Google Drive",
@@ -95,44 +102,51 @@ export const sidebarData = {
           {
             title: "Analyze",
             url: "/key/analyze",
-            icon: Presentation
+            icon: Presentation,
+            description: "Decode and inspect transaction details and parameters",
           }
         ],
       },
       {
         title: "Codable",
-        url: "/codable",
+        url: "/code",
         icon: Bot,
         items: [
           {
             title: "Base64",
             url: "/code/base64",
-            icon: CaseLower
+            icon: CaseLower,
+            description: "Encode and decode Base64 data formats",
           },
           {
             title: "RLP",
             url: "/code/rlp",
-            icon: TextIcon
+            icon: TextIcon,
+            description: "Encode and decode Recursive Length Prefix (RLP) data",
           },
           {
             title: "RLP Transaction",
             url: "/code/rlpTx",
-            icon: ChartNoAxesGantt
+            icon: ChartNoAxesGantt,
+            description: "Parse and create RLP-encoded blockchain transactions",
           },
           {
             title: "Hash",
             url: "/code/hash",
-            icon: Hash
+            icon: Hash,
+            description: "Calculate various cryptographic hash functions",
           },
           {
             title: "AES",
             url: "/code/aes",
-            icon: Shield
+            icon: Shield,
+            description: "Encrypt and decrypt data using AES encryption",
           },
           {
             title: "Hex",
             url: "/code/hex",
-            icon: Binary
+            icon: Binary,
+            description: "Convert between hexadecimal and other data formats",
           },
         ],
       }

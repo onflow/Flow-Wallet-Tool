@@ -4,7 +4,7 @@ import type { AppProps } from "next/app";
 import { Layout } from "@/components/layout";
 import "@/public/globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import fclConfig from "@/lib/fclconfig";
+import fclConfig from "@/lib/fcl-config";
 
 fclConfig()
 

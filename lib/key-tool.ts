@@ -100,5 +100,28 @@ const seed2PubKey = async (seed: string, path: string = FLOW_BIP44_PATH, passphr
 		},
 	};
 };
+const getKeyType = async (pubK: string): Promise<"P256" | "SECP256K1" | null> => {
+	const { PublicKey, PublicKeyType } = await initWasm();
+	const pubkeyData = Buffer.from("04" + pubK.replace("0x", "").replace(/^04/, ""), "hex");
+	let pubKey;
+	pubKey = PublicKey.createWithData(pubkeyData, PublicKeyType.nist256p1Extended);
+	if (!pubKey) {
+		pubKey = PublicKey.createWithData(pubkeyData, PublicKeyType.secp256k1Extended);
+		if (!pubKey) {
+			return null;
+		}
+		return "SECP256K1";
+	}
+	return "P256";
+}
 
-export { generateSeedPhrase, generatePrivateKey, jsonToKey, pk2KeyStore, seed2KeyStore, jsonToMnemonic, pk2PubKey, seed2PubKey };
+const verifySignature = async (pubK: string, signature: string, message: string) => {
+	const { PublicKey, PublicKeyType } = await initWasm();
+	const type = await getKeyType(pubK);
+	const pubkeyData = Buffer.from("04" + pubK.replace("0x", "").replace(/^04/, ""), "hex");
+	const pubKey = PublicKey.createWithData(pubkeyData, type === "P256" ? PublicKeyType.nist256p1Extended : PublicKeyType.secp256k1Extended);
+	console.log('verifySignature', type, pubkeyData.toString('hex'), signature, message)
+	return pubKey.verify(Buffer.from(signature, "hex"), Buffer.from(message, "hex"));
+}
+
+export { generateSeedPhrase, generatePrivateKey, getKeyType, verifySignature, jsonToKey, pk2KeyStore, seed2KeyStore, jsonToMnemonic, pk2PubKey, seed2PubKey };

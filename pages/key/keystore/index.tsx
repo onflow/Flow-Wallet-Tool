@@ -115,7 +115,7 @@ export default function Page() {
         <Button
           className="w-full mt-4"
           onClick={handleSearch}
-          disabled={loading}
+          disabled={loading || !keystore || !password}
         >
           {loading ? (
             <>

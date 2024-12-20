@@ -101,7 +101,7 @@ export default function Page() {
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="seed-phrase">
-                Seed Phrase <span className="text-red-500">*</span>{" "}
+                Seed Phrase
               </Label>
               <Textarea
                 id="seed-phrase"
@@ -113,13 +113,14 @@ export default function Page() {
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="derivation-path">
-                Derivation Path <span className="text-red-500">*</span>
+                Derivation Path
               </Label>
               <Input
                 id="derivation-path"
                 value={derivationPath}
                 onChange={(e) => setDerivationPath(e.target.value)}
               />
+              <p className="text-xs text-muted-foreground">Use default path if unsure.</p>
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="passphrase">Passphrase</Label>
@@ -143,10 +144,11 @@ export default function Page() {
                   )}
                 </button>
               </div>
+              <p className="text-xs text-muted-foreground">Leave blank if unsure.</p>
             </div>
           </div>
         {/* </form> */}
-        <Button className="w-full mt-4" onClick={handleSearch}>
+        <Button className="w-full mt-4" onClick={handleSearch} disabled={!seedPhrase}>
           Find Keys
         </Button>
       </CardContent>

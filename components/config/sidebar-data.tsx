@@ -5,8 +5,6 @@ import {
     Braces,
     UserRound,
     Link,
-    HardDrive,
-    Cloud,
     ListOrdered,
     CaseLower,
     TextIcon,
@@ -14,14 +12,18 @@ import {
     Plus,
     Binoculars,
     Hash,
-    Shield
+    Shield,
+    CircleCheck,
+    Binary,
+    Presentation,
+    Blocks
   } from "lucide-react"
 
 export const sidebarData = {
     navMain: [
       {
         title: "Account",
-        url: "#",
+        url: "/account",
         icon: UserRound,
         items: [
             {
@@ -43,7 +45,7 @@ export const sidebarData = {
       },
       {
         title: "Key",
-        url: "#",
+        url: "/key",
         icon: KeyRound,
         isActive: true,
         items: [
@@ -68,20 +70,37 @@ export const sidebarData = {
             icon: Braces
           },
           {
-            title: "Google Drive",
-            url: "/key/google-drive",
-            icon: HardDrive
+            title: "Verify",
+            url: "/key/verify",
+            icon: CircleCheck,
           },
+          // {
+          //   title: "Google Drive",
+          //   url: "/key/google-drive",
+          //   icon: HardDrive
+          // },
+          // {
+          //   title: "iCloud",
+          //   url: "/key/icloud",
+          //   icon: Cloud
+          // }
+        ],
+      },
+      {
+        title: "Transaction",
+        url: "/tx",
+        icon: Blocks,
+        items: [
           {
-            title: "iCloud",
-            url: "/key/icloud",
-            icon: Cloud
+            title: "Analyze",
+            url: "/tx/analyze",
+            icon: Presentation
           }
         ],
       },
       {
         title: "Codable",
-        url: "#",
+        url: "/codable",
         icon: Bot,
         items: [
           {
@@ -103,6 +122,11 @@ export const sidebarData = {
             title: "AES",
             url: "/code/aes",
             icon: Shield
+          },
+          {
+            title: "Hex",
+            url: "/code/hex",
+            icon: Binary
           },
         ],
       }

@@ -2,14 +2,13 @@
 
 import * as React from "react"
 import { ChevronsUpDown } from "lucide-react"
-
+import { useFCL } from "@/hooks/use-fcl"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -18,15 +17,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { NETWORK } from "@/utils/constants"
 
 const networks = [
-  { name: "Mainnet", color: "bg-green-500" },
-  { name: "Testnet", color: "bg-orange-500" },
+  { name: "Mainnet", color: "green-500", network: NETWORK.MAINNET },
+  { name: "Testnet", color: "orange-500", network: NETWORK.TESTNET },
 ]
 
 export function NetworkStatus() {
   const { isMobile } = useSidebar()
-  const [activeNetwork, setActiveNetwork] = React.useState(networks[0])
+  const { network, switchNetwork } = useFCL()
+  const [loading, setLoading] = React.useState(false)
+  
+  const activeNetwork = networks.find(n => n.network === network) || networks[0]
+
+  const handleNetworkSwitch = async (newNetwork: NETWORK) => {
+    setLoading(true)
+    await switchNetwork(newNetwork)
+    setLoading(false)
+  }
 
   return (
     <SidebarMenu>
@@ -37,15 +46,17 @@ export function NetworkStatus() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-                <div className="flex aspect-square items-center justify-center size-8">
-                    <div className={`flex aspect-square size-3 rounded-2xl ${activeNetwork.color}`}/>
-                </div>
+              <div className="flex aspect-square items-center rounded justify-center size-8">
+                <div className={`aspect-square size-3 rounded-2xl bg-${activeNetwork.color}`}/>
+              </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   Flow {activeNetwork.name}
                 </span>
                 <div className="flex items-center gap-1">
-                <span className="truncate text-xs text-green-500">{`Available`}</span>
+                  <span className={`truncate text-xs ${loading ? 'text-gray-400' : `text-${activeNetwork.color}`}`}>
+                    {loading ? "Connecting..." : "Connected"}
+                  </span>
                 </div>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -60,17 +71,16 @@ export function NetworkStatus() {
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Network
             </DropdownMenuLabel>
-            {networks.map((network, index) => (
+            {networks.map((n) => (
               <DropdownMenuItem
-                key={network.name}
-                onClick={() => setActiveNetwork(network)}
+                key={n.name}
+                onClick={() => handleNetworkSwitch(n.network)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <div className={`${network.color} size-2 shrink-0 rounded-full`} />
+                  <div className={`bg-${n.color}  size-2 shrink-0 rounded-full`} />
                 </div>
-                {network.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                {n.name}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

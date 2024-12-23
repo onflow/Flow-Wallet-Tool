@@ -1,8 +1,8 @@
 import * as fcl from "@onflow/fcl";
 import {send as httpSend} from "@onflow/transport-http"
+import { NETWORK } from "@/utils/constants";
 
-export default function fclConfig() {
-    const network = (process.env.NETWORK || 'mainnet') as 'mainnet' | 'testnet';
+export default function fclConfig(network: NETWORK) {
     
     const networkConfig = {
         mainnet: {

@@ -1,6 +1,6 @@
 import * as fcl from "@onflow/fcl";
 import { AccountKey as FCLAccountKey } from "@onflow/typedefs"
-
+import { NETWORK } from "@/utils/constants"
 export interface AccountKey {
     address: string;
     keyIndex: number;
@@ -20,9 +20,9 @@ export interface IndexerAccountKey {
     signing: string;
 }
 
-export const findAddressWithKey = async (pubKeyHex: string, address?: string): Promise<Array<AccountKey> | null> => {
+export const findAddressWithKey = async (pubKeyHex: string, network: NETWORK, address?: string): Promise<Array<AccountKey> | null> => {
     if (!address) {
-        const response = await fetch(`/api/getAddressByIndexer?publicKey=${pubKeyHex}`)
+        const response = await fetch(`/api/getAddressByIndexer?publicKey=${pubKeyHex}&network=${network}`)
         const data = await response.json()
         
         if (data.accounts && data.accounts.length > 0) {

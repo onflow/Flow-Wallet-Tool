@@ -28,7 +28,7 @@ export default async function handler(
     } else {
       return res.status(400).json({ success: false, errors: data['error-codes'] });
     }
-  } catch (error) {
+  } catch {
     return res.status(500).json({ success: false, message: 'Failed to verify captcha' });
   }
 } 

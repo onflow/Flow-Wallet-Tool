@@ -12,12 +12,12 @@ import {
     Plus,
     Binoculars,
     Hash,
-    Shield,
     CircleCheck,
     Binary,
     Presentation,
     Blocks,
-    ChartNoAxesGantt
+    ChartNoAxesGantt,
+    Lock
   } from "lucide-react"
 
 export const sidebarData = {
@@ -139,7 +139,7 @@ export const sidebarData = {
           {
             title: "AES",
             url: "/code/aes",
-            icon: Shield,
+            icon: Lock,
             description: "Encrypt and decrypt data using AES encryption",
           },
           {

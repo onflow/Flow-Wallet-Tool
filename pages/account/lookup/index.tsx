@@ -19,10 +19,12 @@ import { useRouter } from "next/router";
 import { findAddressWithKey } from "@/lib/find-address-with-pubkey";
 import { AccountKeyCard } from "@/components/account-key-card";
 import { AccountKey } from "@/lib/find-address-with-pubkey";
+import { useFCL } from "@/hooks/use-fcl";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { network } = useFCL()
   const { query } = router;
   const [pubKey, setPubKey] = useState<string>("");
   const { toast } = useToast()
@@ -33,7 +35,7 @@ export default function Page() {
     if (!pubK) return;
     setLoading(true);
     try {
-      const result = await findAddressWithKey(pubK);
+      const result = await findAddressWithKey(pubK, network);
       if (result) {
         setAccounts(result);
       }
@@ -54,7 +56,7 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, [pubKey, toast]);
+  }, [pubKey, toast, network]);
 
   useEffect(() => {
     if (query.publicKey) {

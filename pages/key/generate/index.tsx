@@ -86,7 +86,7 @@ export default function Page() {
   };
 
   return (
-    <Card className="min-w-[450px] max-w-[650px] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-300">
+    <Card className="min-w-[350px] max-w-[650px] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-300">
       <CardHeader className="bg-sidebar">
         <div className="flex items-center gap-2">
           <Plus />

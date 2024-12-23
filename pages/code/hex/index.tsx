@@ -141,7 +141,7 @@ export default function Page() {
             <CardTitle>Hex</CardTitle>
           </div>
           <Select value={outputFormat} onValueChange={handleFormatChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Select output format" />
             </SelectTrigger>
             <SelectContent>

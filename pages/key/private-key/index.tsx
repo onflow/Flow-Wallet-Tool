@@ -87,7 +87,7 @@ export default function Page() {
   }
 
   return (
-    <Card className="min-w-[450px] max-w-[650px overflow-hidden">
+    <Card className="min-w-[350px] max-w-[650px overflow-hidden">
       <CardHeader className="bg-sidebar">
         <div className="flex items-center gap-2">
           <KeyRound />

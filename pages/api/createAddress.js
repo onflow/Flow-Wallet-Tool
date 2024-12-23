@@ -4,7 +4,6 @@
 export default async function createAddress(req, res) {
   const {
     publicKey,
-    apikey,
     network,
     hashAlgorithm = "SHA2_256",
     signatureAlgorithm = "ECDSA_P256",
@@ -16,7 +15,7 @@ export default async function createAddress(req, res) {
   const result = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: apikey,
+      Authorization: process.env.API_KEY,
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     },
@@ -28,7 +27,6 @@ export default async function createAddress(req, res) {
     }),
   });
   const json = await result.json();
-  console.log("createAddress ==>", json);
   const txId = json.data.txId;
   res.status(200).json({ txId });
 }

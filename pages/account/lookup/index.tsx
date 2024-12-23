@@ -68,7 +68,7 @@ export default function Page() {
   }, [handleSearch]);
 
   return (
-    <Card className="min-w-[350px] max-w-[650px overflow-hidden">
+    <Card className="min-w-[350px] max-w-[650px] w-1/3 overflow-hidden">
       <CardHeader className="bg-sidebar">
         <div className="flex items-center gap-2">
           <Binoculars />

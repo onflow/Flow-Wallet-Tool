@@ -128,7 +128,7 @@ export default function Page() {
   }, [searchParams, handleSearch]);
 
   return (
-    <Card className="min-w-[350px] max-w-[850px] overflow-hidden">
+    <Card className="min-w-[350px] max-w-[850px] w-1/3 overflow-hidden">
       <CardHeader className="bg-sidebar">
         <div className="flex items-center gap-2">
           <Presentation className="size-5"/>

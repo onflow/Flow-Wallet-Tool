@@ -26,6 +26,13 @@ const nextConfig = {
 			  ),
 			  to: path.join(__dirname, ".next/static/chunks/pages/key"),
 			},
+			{
+				from: path.join(
+				  __dirname,
+				  "node_modules/@trustwallet/wallet-core/dist/lib/wallet-core.wasm",
+				),
+				to: path.join(__dirname, ".next/static/chunks/pages/account"),
+			},
 		  ],
 		}),
 	  );

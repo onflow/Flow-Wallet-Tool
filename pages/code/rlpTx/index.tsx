@@ -191,6 +191,11 @@ export default function Page() {
                   <CopyableText value={transactionData.payer || ''} />
                 </div>
 
+                <div className="flex flex-col gap-1">
+                  <Label className="text-muted-foreground text-sm">Authorizers</Label>
+                  <CopyableText value={transactionData.authorizers?.join(', ') || ''} />
+                </div>
+
                 {transactionData.payloadSignatures && transactionData.payloadSignatures.length > 0 && (
                   <div className="flex flex-col gap-1">
                     <Label className="text-muted-foreground text-sm">Payload Signatures</Label>

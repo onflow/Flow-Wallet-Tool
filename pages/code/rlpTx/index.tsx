@@ -32,6 +32,7 @@ interface TransactionData {
   keyIndex?: number;
   sequenceNumber?: number;
   payer?: string;
+  authorizers?: string[];
   payloadSignatures?: {
     signerIndex: number;
     keyIndex: number;
@@ -56,23 +57,18 @@ export default function Page() {
     if (decodedArr.length === 2) { // Has both payload and envelope
       const [payload, payloadSigs] = decodedArr;
       const payloadData = await formatPayload(payload as unknown as string[]);
-      console.log('payloadData', payloadData)
       return { ...payloadData, payloadSignatures: formatSignatures(payloadSigs as unknown as string[][]) };
     } else { // Only payload
       return formatPayload(decodedArr);
-    }
+    } 
   }
   
   async function formatPayload(arr: string[]): Promise<TransactionData> {
-    console.log('arr', arr)
-
     let decoded = []
     if (Array.isArray(arr[1]) && arr[1].length > 0) {
       const objs = arr[1].map((arg: string) => JSON.parse(hexToUtf8(arg)))
-      console.log('objs', objs)
       decoded = await Promise.all(objs.map(a => fclDecode(a)))
       // arr[1] = await Promise.all(objs.map(fcl.decode))
-      console.log('decoded', decoded)
     }
 
     return {
@@ -84,6 +80,7 @@ export default function Page() {
       keyIndex: hexToInt(arr[5]) || 0,
       sequenceNumber: hexToInt(arr[6]) || 0 || 0,
       payer: arr[7],
+      authorizers: arr[8] ? arr[8].split(',') : [],
     };
   }
 
@@ -97,13 +94,9 @@ export default function Page() {
         const tag = removeFlowTag(value);
         if (!tag) return;
         const buffer = Buffer.from(tag, 'hex');
-        console.log('buffer', buffer)
         const decoded = decode(buffer);
-        console.log('decoded', decoded)
         const decodedArr = arrToStringArr(decoded as Uint8Array[]);
-        console.log('decodedArr', decodedArr)
         const txData = await formatTransaction(decodedArr);
-        console.log('txData', txData)
         setTransactionData(txData);
       } catch (error) {
         console.error(error);

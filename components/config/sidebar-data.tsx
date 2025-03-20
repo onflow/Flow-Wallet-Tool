@@ -17,6 +17,7 @@ import {
     Presentation,
     Blocks,
     ChartNoAxesGantt,
+    HardDrive,
     Lock
   } from "lucide-react"
 
@@ -82,11 +83,11 @@ export const sidebarData = {
             icon: CircleCheck,
             description: "Validate private key and address pair",
           },
-          // {
-          //   title: "Google Drive",
-          //   url: "/key/google-drive",
-          //   icon: HardDrive
-          // },
+          {
+            title: "Google Drive",
+            url: "/key/google-drive",
+            icon: HardDrive
+          }
           // {
           //   title: "iCloud",
           //   url: "/key/icloud",

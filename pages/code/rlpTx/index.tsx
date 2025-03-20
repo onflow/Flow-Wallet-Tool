@@ -71,6 +71,8 @@ export default function Page() {
       // arr[1] = await Promise.all(objs.map(fcl.decode))
     }
 
+    console.log('arr', arr)
+
     return {
       script: hexToUtf8(arr[0]),
       arguments: decoded,
@@ -80,7 +82,7 @@ export default function Page() {
       keyIndex: hexToInt(arr[5]) || 0,
       sequenceNumber: hexToInt(arr[6]) || 0 || 0,
       payer: arr[7],
-      authorizers: arr[8] ? arr[8].split(',') : [],
+      authorizers: Array.isArray(arr[8]) ? arr[8] : []
     };
   }
 

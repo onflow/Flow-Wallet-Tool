@@ -54,7 +54,7 @@ export default function Page() {
     }
 
     try {
-      const result = await verifySignature(publicKey, message, signature);
+      const result = await verifySignature(publicKey, signature, message);
       setVerifyResult(result);
     } catch (error) {
       console.error("Error verifying signature:", error);

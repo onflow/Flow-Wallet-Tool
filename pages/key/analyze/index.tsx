@@ -19,8 +19,6 @@ import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button";
 import { findTxById, FCLSignature, verifySignatureByAddressFirstKey } from "@/lib/transaction-analyze";
 import { CopyableText } from "@/components/copyable-text";
-import { encode } from "rlp";
-import { keccak256 } from "@/lib/key-tool";
 
 interface TransactionDetails {
   encodedPayload: string;
@@ -52,24 +50,6 @@ export default function Page() {
   const { toast } = useToast()
   const [payloadKeyInfo, setPayloadKeyInfo] = useState<Array<{address: string, index: number, sig: KeyInfoWithSignature, key: KeyInfo | null}>>([]);
   const [envelopeKeyInfo, setEnvelopeKeyInfo] = useState<Array<{address: string, index: number, sig: KeyInfoWithSignature, key: KeyInfo | null}>>([]);
-
-  const testExample = () => {
-    const transaction = [
-      9, // nonce
-      0, // Fixed value
-      30000000, // Gas Limit
-      Buffer.from("2b7E32BB7F9BA35ea1a0D8181c8D163B3B0D5ea2", 'hex'), // To Address
-      BigInt(0.1 * 10 ** 18), // Value
-      Buffer.from([]), // Call Data
-      255, // Fixed value
-      BigInt("0x00000000000000000000000233265F840C7F9F41"), // From Account
-      5 // SubType
-    ];
-
-    const encodedData = encode(transaction);
-    const hash = keccak256(Buffer.from(encodedData, 'hex'));
-    console.log("result ==>", "0x" + Buffer.from(hash).toString('hex'));
-  }
 
 
   const handleSearch = useCallback(async (id?: string) => {
@@ -146,7 +126,6 @@ export default function Page() {
       setTxId(txParam);
       handleSearch(txParam);
     }
-    testExample()
   }, [searchParams, handleSearch]);
 
   return (

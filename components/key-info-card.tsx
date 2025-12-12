@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Separator } from "@radix-ui/react-separator";
 import { CopyableText } from "@/components/copyable-text";
 import { Button } from "./ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Copy } from "lucide-react";
 
 interface KeyInfoCardProps {
   title: string;
@@ -24,6 +24,14 @@ export function KeyInfoCard({ title, privateKey, publicKey }: KeyInfoCardProps) 
           <div key={field.label}>
             <div className="flex items-center gap-2 justify-between">
               <p className="text-sm font-medium text-muted-foreground">{field.label}</p>
+              <button
+                type="button"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"
+                onClick={() => navigator.clipboard.writeText(field.value || "")}
+              >
+                <Copy className="h-3 w-3" />
+                Copy
+              </button>
             </div>
             <CopyableText value={field.value} />
             {index === 0 && privateKey && <Separator className="bg-border h-px" />}

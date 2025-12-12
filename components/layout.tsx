@@ -26,7 +26,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     <BreadcrumbItem>
                       <BreadcrumbLink href="/" className="flex items-center gap-2">
                         <Home className="h-4 w-4" />
-                        <span>Home</span>
+                        <span className="hidden sm:inline">Home</span>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     {pathname !== "/" && (() => {
@@ -44,7 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                               <BreadcrumbItem>
                                 <BreadcrumbLink href={parentItem.url} className="flex items-center gap-2">
                                   {parentItem.icon && <parentItem.icon className="h-4 w-4" />}
-                                  <span>{parentItem.title}</span>
+                                  <span className="hidden sm:inline">{parentItem.title}</span>
                                 </BreadcrumbLink>
                               </BreadcrumbItem>
                             </>
@@ -55,7 +55,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                               <BreadcrumbItem>
                                 <BreadcrumbLink href={currentItem.url} className="flex items-center gap-2">
                                   {currentItem.icon && <currentItem.icon className="h-4 w-4" />}
-                                  <span>{currentItem.title}</span>
+                                  <span className="hidden sm:inline">{currentItem.title}</span>
                                 </BreadcrumbLink>
                               </BreadcrumbItem>
                             </>

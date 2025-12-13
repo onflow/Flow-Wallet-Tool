@@ -9,9 +9,6 @@ const __dirname = dirname(__filename);
 
 const nextConfig = {
 	reactStrictMode: true,
-	publicRuntimeConfig: {
-	  basePath: "",
-	},
 	// compiler: {
 	//   removeConsole: process.env.NEXT_PUBLIC_ENV === "dev" ? false : true,
 	// },

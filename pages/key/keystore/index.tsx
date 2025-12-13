@@ -29,6 +29,7 @@ import {
   findAddressWithKey,
 } from "@/lib/find-address-with-pubkey";
 import { KeystoreResultCard } from "@/components/keystore-result-card";
+import { CopyableText } from "@/components/copyable-text";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);

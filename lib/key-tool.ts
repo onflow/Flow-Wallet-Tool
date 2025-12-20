@@ -7,11 +7,14 @@ let walletCore: any = null;
 async function getWalletCore() {
   if (!walletCore) {
     try {
-      // Set the WASM path before initialization
-      if (typeof window !== 'undefined') {
-        (globalThis as any).WALLET_CORE_WASM_PATH = '/wallet-core.wasm';
-      }
-      walletCore = await initWasm();
+      const wasmUrl =
+        typeof window !== 'undefined'
+          ? new URL('/wallet-core.wasm', window.location.origin).toString()
+          : 'wallet-core.wasm';
+      walletCore = await (initWasm as any)({
+        locateFile: (path: string) =>
+          path.endsWith('.wasm') ? wasmUrl : path,
+      });
     } catch (error) {
       console.error('Failed to initialize wallet core:', error);
       throw error;

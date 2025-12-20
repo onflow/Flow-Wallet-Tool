@@ -12,6 +12,22 @@ const nextConfig = {
 	// compiler: {
 	//   removeConsole: process.env.NEXT_PUBLIC_ENV === "dev" ? false : true,
 	// },
+	async rewrites() {
+		return [
+			{
+				source: '/_next/static/chunks/pages/:path*/wallet-core.wasm',
+				destination: '/wallet-core.wasm',
+			},
+		];
+	},
+	turbopack: {
+		root: __dirname,
+		rules: {
+			'*.wasm': {
+				loaders: ['file-loader'],
+			},
+		},
+	},
 	webpack: (config, { isServer }) => {
 	  config.plugins.push(
 		new CopyPlugin({
@@ -21,26 +37,23 @@ const nextConfig = {
 				__dirname,
 				"node_modules/@trustwallet/wallet-core/dist/lib/wallet-core.wasm",
 			  ),
-			  to: path.join(__dirname, ".next/static/chunks/pages/key"),
-			},
-			{
-				from: path.join(
-				  __dirname,
-				  "node_modules/@trustwallet/wallet-core/dist/lib/wallet-core.wasm",
-				),
-				to: path.join(__dirname, ".next/static/chunks/pages/account"),
+			  to: path.join(__dirname, "public/wallet-core.wasm"),
 			},
 		  ],
 		}),
 	  );
 	  config.experiments.asyncWebAssembly = true;
-	  if (!isServer) {
-		config.output.publicPath = `/_next/`;
-	  } else {
-		config.output.publicPath = `./`;
-	  }
-	  config.resolve.fallback = { fs: false };
-	  config.output.assetModuleFilename = `node_modules/@trustwallet/dist/lib/wallet-core.wasm`;
+	  config.resolve.fallback = { 
+		fs: false,
+		path: false,
+		crypto: false,
+		stream: false,
+		assert: false,
+		http: false,
+		https: false,
+		os: false,
+		url: false
+	  };
 	  config.module.rules.push({
 		test: /\.(wasm)$/,
 		type: "asset/resource",

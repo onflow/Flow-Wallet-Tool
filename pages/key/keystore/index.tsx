@@ -143,7 +143,7 @@ export default function Page() {
   );
 
   const onDrop = useCallback(
-    async (event: React.DragEvent<HTMLDivElement>) => {
+    async (event: React.DragEvent<HTMLLabelElement>) => {
       event.preventDefault();
       setIsDragging(false);
       const file = event.dataTransfer?.files?.[0];
@@ -154,12 +154,12 @@ export default function Page() {
     [handleFile]
   );
 
-  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+  const onDragOver = useCallback((event: React.DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     setIsDragging(true);
   }, []);
 
-  const onDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+  const onDragLeave = useCallback((event: React.DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     setIsDragging(false);
   }, []);
@@ -170,6 +170,7 @@ export default function Page() {
       if (file) {
         await handleFile(file);
       }
+      event.target.value = "";
     },
     [handleFile]
   );
@@ -297,16 +298,26 @@ export default function Page() {
               id="keystore-file"
               type="file"
               accept="application/json,.json,application/pdf,.pdf"
-              className="hidden"
+              className="sr-only"
               onChange={onFileChange}
             />
-            <div
+            <label
+              htmlFor="keystore-file"
               role="button"
               tabIndex={0}
-              onClick={() => fileInputRef.current?.click()}
+              onClick={(event) => {
+                event.preventDefault();
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = "";
+                }
+                fileInputRef.current?.click();
+              }}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                  }
                   fileInputRef.current?.click();
                 }
               }}
@@ -330,7 +341,7 @@ export default function Page() {
                 We will extract the keystore JSON from Blocto recovery PDFs automatically. Click to
                 browse if you prefer.
               </span>
-            </div>
+            </label>
           </div>
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="keystore">Keystore</Label>

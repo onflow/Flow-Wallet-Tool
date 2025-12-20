@@ -1,9 +1,27 @@
 import { initWasm } from "@trustwallet/wallet-core";
 import { FLOW_BIP44_PATH } from "./constants";
 
-const { StoredKey, PrivateKey, CoinType, PublicKey, PublicKeyType, HDWallet, Curve, Hash } = await initWasm();
+// Initialize wallet core with custom WASM path
+let walletCore: any = null;
 
-const keccak256 = (data: Buffer) => {
+async function getWalletCore() {
+  if (!walletCore) {
+    try {
+      // Set the WASM path before initialization
+      if (typeof window !== 'undefined') {
+        (globalThis as any).WALLET_CORE_WASM_PATH = '/wallet-core.wasm';
+      }
+      walletCore = await initWasm();
+    } catch (error) {
+      console.error('Failed to initialize wallet core:', error);
+      throw error;
+    }
+  }
+  return walletCore;
+}
+
+const keccak256 = async (data: Buffer) => {
+	const { Hash } = await getWalletCore();
 	return Hash.keccak256(data);
 }
 
@@ -11,18 +29,19 @@ const generateSeedPhrase = async (
 	strength: number = 128,
 	passphrase: string = ""
 ) => {
-	const { HDWallet } = await initWasm();
+	const { HDWallet } = await getWalletCore();
 	const wallet = HDWallet.create(strength, passphrase);
 	return wallet.mnemonic();
 };
 
 const generatePrivateKey = async () => {
-	const { PrivateKey } = await initWasm();
+	const { PrivateKey } = await getWalletCore();
 	const pk = PrivateKey.create()
 	return Buffer.from(pk.data()).toString("hex")
 };
 
 const jsonToKey = async (json: string, password: string) => {
+	const { StoredKey, PrivateKey } = await getWalletCore();
 	const keystore = StoredKey.importJSON(Buffer.from(json, "utf-8"));
 	const privateKeyData = await keystore.decryptPrivateKey(
 		Buffer.from(password, "utf-8")
@@ -32,6 +51,7 @@ const jsonToKey = async (json: string, password: string) => {
 };
 
 const jsonToMnemonic = async (json: string, password: string) => {
+	const { StoredKey } = await getWalletCore();
 	const keystore = StoredKey.importJSON(Buffer.from(json, "utf-8"));
 	const mnemonic = await keystore.decryptMnemonic(
 		Buffer.from(password, "utf-8")
@@ -40,6 +60,7 @@ const jsonToMnemonic = async (json: string, password: string) => {
 };
 
 const pk2KeyStore = async (pk: string, password: string) => {
+	const { StoredKey, CoinType } = await getWalletCore();
 	const privateKey = Buffer.from(pk, "hex");
 	const keystore = StoredKey.importPrivateKey(privateKey, "tempKeyStore", Buffer.from(password, "utf-8"), CoinType.ethereum);
 	const json = keystore.exportJSON();
@@ -47,12 +68,14 @@ const pk2KeyStore = async (pk: string, password: string) => {
 }
 
 const seed2KeyStore = async (seed: string, password: string) => {
+	const { StoredKey, CoinType } = await getWalletCore();
 	const keystore = StoredKey.importHDWallet(seed, "tempKeyStore", Buffer.from(password, "utf-8"), CoinType.ethereum);
 	const json = keystore.exportJSON();
 	return Buffer.from(json).toString("utf-8");
 }
 
 const pk2PubKey = async (pk: string) => {
+	const { PrivateKey } = await getWalletCore();
 	const privateKey = PrivateKey.createWithData(Buffer.from(pk, "hex"));
 	const p256PubK = Buffer.from(
 		privateKey.getPublicKeyNist256p1().uncompressed().data()
@@ -77,6 +100,7 @@ const pk2PubKey = async (pk: string) => {
 };
 
 const seed2PubKey = async (seed: string, path: string = FLOW_BIP44_PATH, passphrase: string = "") => {
+	const { HDWallet, Curve } = await getWalletCore();
 	const wallet = HDWallet.createWithMnemonic(seed, passphrase);
 	const p256PK = wallet.getKeyByCurve(Curve.nist256p1, path);
 	const p256PubK = Buffer.from(
@@ -101,6 +125,7 @@ const seed2PubKey = async (seed: string, path: string = FLOW_BIP44_PATH, passphr
 	};
 };
 const getKeyType = async (pubK: string): Promise<"P256" | "SECP256K1" | null> => {
+	const { PublicKey, PublicKeyType } = await getWalletCore();
 	const pubkeyData = Buffer.from("04" + pubK.replace("0x", "").replace(/^04/, ""), "hex");
 	let pubKey;
 	pubKey = PublicKey.createWithData(pubkeyData, PublicKeyType.nist256p1Extended);
@@ -115,6 +140,7 @@ const getKeyType = async (pubK: string): Promise<"P256" | "SECP256K1" | null> =>
 }
 
 const verifySignature = async (pubK: string, signature: string, message: string) => {
+	const { PublicKey, PublicKeyType } = await getWalletCore();
 	const type = await getKeyType(pubK);
 	const pubkeyData = Buffer.from("04" + pubK.replace("0x", "").replace(/^04/, ""), "hex");
 	const pubKey = PublicKey.createWithData(pubkeyData, type === "P256" ? PublicKeyType.nist256p1Extended : PublicKeyType.secp256k1Extended);

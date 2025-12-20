@@ -35,6 +35,7 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showPrivateKey, setShowPrivateKey] = useState(false);
   const [pdfPassword, setPdfPassword] = useState("");
   const [pdfPasswordDialogOpen, setPdfPasswordDialogOpen] = useState(false);
   const [showPdfPassword, setShowPdfPassword] = useState(false);
@@ -164,6 +165,68 @@ export default function Page() {
     }
   }, []);
 
+  const lookupAddresses = useCallback(
+    async (pubKeyMap: { P256?: { pubK: string }; SECP256K1?: { pubK: string } }) => {
+      const keys = [
+        pubKeyMap.P256?.pubK,
+        pubKeyMap.SECP256K1?.pubK,
+      ].filter(Boolean) as string[];
+
+      if (!keys.length) return;
+
+      setAddressLookupLoading(true);
+      try {
+        const results = await Promise.all(
+          keys.map((key) => findAddressWithKey(key, network))
+        );
+        const flattened = results
+          .filter(Boolean)
+          .flat() as AccountKey[];
+        setAccounts(flattened);
+
+        if (!flattened.length) {
+          toast({
+            variant: "destructive",
+            title: "No Flow addresses found",
+            description: "We could not find any accounts using these public keys.",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to lookup addresses:", error);
+        toast({
+          variant: "destructive",
+          title: "Address lookup failed",
+          description:
+            "Unable to fetch Flow addresses from the indexer right now.",
+        });
+      } finally {
+        setAddressLookupLoading(false);
+      }
+    },
+    [network, toast]
+  );
+
+  const deriveFromPrivateKey = useCallback(
+    async (privateKey: string) => {
+      setLoading(true);
+      try {
+        const result = await pk2PubKey(privateKey);
+        setPubKeys(result);
+        lookupAddresses(result);
+      } catch (error) {
+        console.error(error);
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error instanceof Error ? error.message : "An unknown error occurred",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [lookupAddresses, toast]
+  );
+
   const handleFile = useCallback(
     async (file: File, password?: string) => {
       const isPdf =
@@ -202,6 +265,7 @@ export default function Page() {
           setPK(extractedPk);
           setPubKeys(null);
           setAccounts([]);
+          await deriveFromPrivateKey(extractedPk);
           toast({
             title: "Private key extracted",
             description: "Private key has been extracted from PDF and filled in.",
@@ -228,7 +292,7 @@ export default function Page() {
         setProcessingFile(false);
       }
     },
-    [extractJsonFromPdf, toast]
+    [deriveFromPrivateKey, extractJsonFromPdf, toast]
   );
 
   const onDrop = useCallback(
@@ -320,54 +384,10 @@ export default function Page() {
     }
   }
 
-  const lookupAddresses = useCallback(
-    async (pubKeyMap: { P256?: { pubK: string }; SECP256K1?: { pubK: string } }) => {
-      const keys = [
-        pubKeyMap.P256?.pubK,
-        pubKeyMap.SECP256K1?.pubK,
-      ].filter(Boolean) as string[];
-
-      if (!keys.length) return;
-
-      setAddressLookupLoading(true);
-      try {
-        const results = await Promise.all(
-          keys.map((key) => findAddressWithKey(key, network))
-        );
-        const flattened = results
-          .filter(Boolean)
-          .flat() as AccountKey[];
-        setAccounts(flattened);
-
-        if (!flattened.length) {
-          toast({
-            variant: "destructive",
-            title: "No Flow addresses found",
-            description: "We could not find any accounts using these public keys.",
-          });
-        }
-      } catch (error) {
-        console.error("Failed to lookup addresses:", error);
-        toast({
-          variant: "destructive",
-          title: "Address lookup failed",
-          description:
-            "Unable to fetch Flow addresses from the indexer right now.",
-        });
-      } finally {
-        setAddressLookupLoading(false);
-      }
-    },
-    [network, toast]
-  );
-
   const handleSearch = async () => {
       if (!pk) return;
-      setLoading(true);
       try {
-          const result = await pk2PubKey(pk);
-          setPubKeys(result);
-          lookupAddresses(result);
+          await deriveFromPrivateKey(pk);
       } catch (error) {
           console.error(error);
           toast({
@@ -375,8 +395,6 @@ export default function Page() {
             title: "Uh oh! Something went wrong.",
             description: error instanceof Error ? error.message : "An unknown error occurred",
           })
-      } finally {
-          setLoading(false);
       }
   }
 
@@ -469,13 +487,29 @@ export default function Page() {
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="private-key">Private Key</Label>
-              <Input 
-                id="private-key" 
-                placeholder="Enter private key or upload PDF"
-                value={pk}
-                onChange={(e) => setPK(e.target.value)}
-                className="h-12"
-              />
+              <div className="relative">
+                <Input
+                  id="private-key"
+                  type={showPrivateKey ? "text" : "password"}
+                  placeholder="Enter private key or upload PDF"
+                  value={pk}
+                  onChange={(e) => setPK(e.target.value)}
+                  className="h-12"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3"
+                  onClick={() => setShowPrivateKey(!showPrivateKey)}
+                >
+                  {showPrivateKey ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </div>
         </div>
         <Button

@@ -93,13 +93,17 @@ export default function Page() {
 
     try {
       const pdf = await loadingTask.promise;
-      const attachments = (pdf as typeof pdf & { getAttachments?: () => Promise<Record<string, { filename?: string; content?: Uint8Array }> | null> })
-        .getAttachments
-        ? await (pdf as typeof pdf & { getAttachments: () => Promise<Record<string, { filename?: string; content?: Uint8Array }> | null> }).getAttachments()
+      type PdfAttachment = { filename?: string; content?: Uint8Array };
+      const attachments = (pdf as typeof pdf & {
+        getAttachments?: () => Promise<Record<string, PdfAttachment> | null>;
+      }).getAttachments
+        ? await (pdf as typeof pdf & {
+            getAttachments: () => Promise<Record<string, PdfAttachment> | null>;
+          }).getAttachments()
         : null;
 
       if (attachments) {
-        const attachmentItems = Object.values(attachments);
+        const attachmentItems = Object.values(attachments) as PdfAttachment[];
         for (const attachment of attachmentItems) {
           if (!attachment?.content) continue;
           try {

@@ -54,6 +54,7 @@ function CreateAccountForm() {
   const [publicKey, setPublicKey] = useState("");
   const [signAlgo, setSignAlgo] = useState<SIGN_ALGO>(SIGN_ALGO.P256);
   const [hashAlgo, setHashAlgo] = useState<HASH_ALGO>(HASH_ALGO.SHA3_256);
+  const [keyWeight, setKeyWeight] = useState<number>(1000);
   const [seedPhrase, setSeedPhrase] = useState("");
   const [txId, setTxId] = useState("");
   const [flowAddress, setFlowAddress] = useState("");
@@ -85,7 +86,12 @@ function CreateAccountForm() {
           throw new Error("Please generate or enter a seed phrase");
         }
         const pubKeys = await seed2PubKey(seedPhrase);
-        finalPublicKey = pubKeys.SECP256K1.pubK;
+        // Use the selected algorithm's public key
+        if (signAlgo === SIGN_ALGO.P256) {
+          finalPublicKey = pubKeys.P256.pubK;
+        } else {
+          finalPublicKey = pubKeys.SECP256K1.pubK;
+        }
       } else {
         if (!publicKey) {
           throw new Error("Please enter a public key");
@@ -97,9 +103,9 @@ function CreateAccountForm() {
         body: JSON.stringify({
           publicKey: finalPublicKey,
           network,
-          hashAlgorithm: mode === "seedphrase" ? HASH_ALGO.SHA3_256 : hashAlgo,
-          signatureAlgorithm:
-            mode === "seedphrase" ? SIGN_ALGO.SECP256K1 : signAlgo,
+          hashAlgorithm: hashAlgo,
+          signatureAlgorithm: signAlgo,
+          weight: keyWeight,
           captchaToken,
         }),
       });
@@ -247,44 +253,14 @@ function CreateAccountForm() {
       <Separator className="bg-border h-px" />
       <CardContent className="pt-4 flex flex-col gap-4">
         {mode === "pubkey" ? (
-          <>
-            <div className="flex flex-col gap-2">
-              <Label>Public Key</Label>
-              <Input
-                placeholder="Enter public key"
-                value={publicKey}
-                onChange={(e) => setPublicKey(e.target.value)}
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <Label>Signature Algorithm</Label>
-                <Select onValueChange={(value) => setSignAlgo(value as SIGN_ALGO)} defaultValue={signAlgo}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={SIGN_ALGO.P256}>P-256</SelectItem>
-                    <SelectItem value={SIGN_ALGO.SECP256K1}>secp256k1</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex-1">
-                <Label>Hash Algorithm</Label>
-                <Select onValueChange={(value) => setHashAlgo(value as HASH_ALGO)} defaultValue={hashAlgo}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={HASH_ALGO.SHA256}>SHA-256</SelectItem>
-                    <SelectItem value={HASH_ALGO.SHA3_256}>SHA3-256</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </>
+          <div className="flex flex-col gap-2">
+            <Label>Public Key</Label>
+            <Input
+              placeholder="Enter public key"
+              value={publicKey}
+              onChange={(e) => setPublicKey(e.target.value)}
+            />
+          </div>
         ) : (
           <div className="flex flex-col gap-2">
             <Label>Seed Phrase</Label>
@@ -300,6 +276,46 @@ function CreateAccountForm() {
             </div>
           </div>
         )}
+
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <Label>Signature Algorithm</Label>
+            <Select onValueChange={(value) => setSignAlgo(value as SIGN_ALGO)} defaultValue={signAlgo}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={SIGN_ALGO.P256}>P-256</SelectItem>
+                <SelectItem value={SIGN_ALGO.SECP256K1}>secp256k1</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex-1">
+            <Label>Hash Algorithm</Label>
+            <Select onValueChange={(value) => setHashAlgo(value as HASH_ALGO)} defaultValue={hashAlgo}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={HASH_ALGO.SHA256}>SHA-256</SelectItem>
+                <SelectItem value={HASH_ALGO.SHA3_256}>SHA3-256</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label>Key Weight</Label>
+          <Input
+            type="number"
+            placeholder="Enter key weight"
+            value={keyWeight}
+            onChange={(e) => setKeyWeight(Number(e.target.value))}
+            min={0}
+            max={1000}
+          />
+        </div>
 
         <div className="flex flex-col items-center gap-4">
           <Button

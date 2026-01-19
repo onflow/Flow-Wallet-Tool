@@ -9,7 +9,7 @@ export default async function createAddress(req, res) {
     signatureAlgorithm = "ECDSA_P256",
     weight = 1000,
   } = JSON.parse(req.body);
-  const url = `https://openapi.lilico.org/v1/address${
+  const url = `https://openapi.lilico.app/v1/address${
     network == "testnet" ? "/testnet" : ""
   }`;
   const result = await fetch(url, {

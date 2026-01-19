@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 export default async function getAddress(req, res) {
   const { publicKey, apikey, network } = JSON.parse(req.body);
-  const url = `https://openapi.lilico.org/v1/address${
+  const url = `https://openapi.lilico.app/v1/address${
     network == "testnet" ? "/testnet" : ""
   }?${new URLSearchParams({ publicKey }).toString()}`;
   console.log("url ==>", url);
